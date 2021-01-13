@@ -4,5 +4,5 @@ This is the backend repository for the **KÄMPP** roommate finder web service. I
 
 ## API documentation
 
-API documentation can be found under `/docs`
+API documentation can be found under `/docs`.
 CRUD operations for schemas will be the first to be implemented. After that, login actions and authentication.
