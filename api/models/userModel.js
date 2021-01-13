@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   name: { type: String, required: true },
   surname: { type: String, required: true },
+  creationTime: { type: Date, required: true },
+  lastActive: { type: Date, required: true },
+  movingDate: { type: Date },
   //Vanhempi on isompi numero.
   ageGroup: { type: Number, min: 1, max: 8, required: true },
   //1-mies, 2-nainen, 3-muu.
@@ -38,6 +41,7 @@ const userSchema = new mongoose.Schema({
   //Näytä vain jos Pets = true, https://stackoverflow.com/a/49940245{}
   petTypes: [petTypesSchema],
   hobbies: [hobbiesSchema],
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
 });
 function arrayLimit(val) {
   return val.length <= 7;
