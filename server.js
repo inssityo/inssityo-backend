@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 
 global.User = require("./api/models/userModel");
-const routes = require("./api/routes/userRoutes");
+global.targetProfile = require("./api/models/targetProfileModel");
+const userRoutes = require("./api/routes/userRoutes");
+const targetProfileRoutes = require("./api/routes/targetProfileRoutes");
 
 mongoose.Promise = global.Promise;
 mongoose.set("useFindAndModify", false);
@@ -28,7 +30,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-routes(app);
+userRoutes(app);
+targetProfileRoutes(app);
 app.listen(port);
 
 app.use((req, res) => {
