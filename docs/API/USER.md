@@ -460,6 +460,8 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 
 Deletes existing user (based on userId) from database. For now, doesn't respond any different if there is no user corresponding the Id specified.
 
+Deleting the user also deletes the referenced targetProfile document for the user, if one exists. This process is done by using mongoose's 'pre' hook middleware. The deletion process is defined in the `usermodel.js` file.
+
 **URL**: `/users/:userId`
 
 **Method**: `DELETE`

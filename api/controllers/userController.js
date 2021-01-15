@@ -53,13 +53,17 @@ exports.updateUser = (req, res) => {
     }
   );
 };
-//POISTA TÄSSÄ YHTEYDESSÄ MYÖS KÄYTTÄJÄN TARGETPROFILE!
-exports.deleteUser = (req, res) => {
-  user.deleteOne({ _id: req.params.userId }, (err) => {
-    if (err) res.status(404).send(err);
-    res.json({
-      message: "user deleted!",
-      _id: req.params.userId,
-    });
+
+//Middleware in userModel.js handles deletion of ref targetProfiles with mongoose 'pre' hook.
+exports.deleteUser = async (req, res) => {
+  await user.deleteOne({ _id: req.params.userId }, (err) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json({
+        message: "user deleted!",
+        _id: req.params.userId,
+      });
+    }
   });
 };

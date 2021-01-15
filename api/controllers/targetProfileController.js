@@ -1,3 +1,4 @@
+const { json } = require("body-parser");
 const mongoose = require("mongoose");
 const targetProfile = mongoose.model("targetProfile");
 const User = mongoose.model("user");
@@ -7,7 +8,6 @@ exports.getAllTargetProfiles = (req, res) => {
     .find({})
     .populate("user")
     .exec(function (err, targetProfiles) {
-      console.log("TGT");
       if (err) res.status(404).send();
       res.json(targetProfiles);
     });
@@ -22,21 +22,20 @@ exports.findTargetProfile = (req, res) => {
       res.json(targetProfile);
     });
 };
+
 //KESKEN
-exports.findTargetProfilesByLocation = (req, res) => {
-  console.log("LOC");
+exports.findTargetProfilesByLocation = async (req, res) => {
   const allLocations = req.query.location.split(",");
   console.log(allLocations);
   let result;
   try {
-    allLocations.forEach(async (e) => {
-      result += await targetProfile.find({ location: e }).populate("user");
-      console.log(result);
-    });
+    result = await targetProfile
+      .find({ location: { $in: allLocations } })
+      .populate("user");
   } catch (err) {
+    console.log(err);
     return res.status(404).send();
   }
-  console.log(result);
   res.json(result);
 };
 
@@ -48,8 +47,6 @@ exports.createTargetProfile = async (req, res) => {
     res.status(201).json(targetProfile);
   });
   const owner = await User.findById(req.body.user);
-  console.log(owner);
-  console.log("saving to USER");
   owner.targetProfile = newTargetProfile._id;
   owner.save();
 };
@@ -68,7 +65,7 @@ exports.updateTargetProfile = (req, res) => {
 
 exports.deleteTargetProfile = (req, res) => {
   targetProfile.deleteOne({ _id: req.params.targetProfileId }, (err) => {
-    if (err) res.status(404).send(err);
+    if (err) res.send(err);
     res.json({
       message: "target profile deleted!",
       _id: req.params.targetProfileId,
