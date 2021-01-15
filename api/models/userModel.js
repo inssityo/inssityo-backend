@@ -55,4 +55,19 @@ function arrayLimit(val) {
   return val.length <= 7;
 }
 
+//User deletion middleware to delete ref targetProfile on user deletion
+//https://stackoverflow.com/a/55338337
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("targetProfile")
+    .deleteOne({ user: query._conditions._id }, function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        return next();
+      }
+    });
+});
+
 module.exports = mongoose.model("user", userSchema);
