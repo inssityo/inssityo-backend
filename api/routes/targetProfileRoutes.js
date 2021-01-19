@@ -10,4 +10,10 @@ module.exports = (app) => {
   app
     .route("/targetProfiles/location/?")
     .get(targetProfileController.findTargetProfilesByLocation);
+
+  app
+    .route("/targetProfiles/:targetProfileId")
+    .get(targetProfileController.findTargetProfile)
+    .put(targetProfileController.updateTargetProfile)
+    .delete(targetProfileController.deleteTargetProfile);
 };

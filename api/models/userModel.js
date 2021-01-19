@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   //Pitäisi salata jotenkin.
   password: { type: String, required: true },
+  //SERVERI LISÄÄ LUONNIN YHTEYDESSÄ
   creationTime: { type: Date, required: true },
   lastActive: { type: Date, required: true },
 

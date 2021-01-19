@@ -17,10 +17,10 @@ exports.getAllTargetProfiles = (req, res) => {
 //Find target profile by its id
 exports.findTargetProfile = (req, res) => {
   targetProfile
-    .findById(req.query.targetProfileId)
+    .findById(req.params.targetProfileId)
     .populate("user")
     .exec(function (err, targetProfile) {
-      if (err) res.status(403).send();
+      if (err) res.status(404).send(err);
       res.json(targetProfile);
     });
 };
@@ -43,15 +43,22 @@ exports.findTargetProfilesByLocation = async (req, res) => {
 
 //Creates a target profile and saves it to database. If a user id is given, also creates a reference to the user.
 exports.createTargetProfile = async (req, res) => {
-  const newTargetProfile = new targetProfile(req.body);
-  console.log(req.body);
-  newTargetProfile.save((err, targetProfile) => {
-    if (err) res.status(403).send();
-    res.status(201).json(targetProfile);
-  });
-  const owner = await User.findById(req.body.user);
-  owner.targetProfile = newTargetProfile._id;
-  owner.save();
+  try {
+    const owner = await User.findById(req.body.user);
+
+    if (!owner) throw "Parent user not found or defined in request body";
+    if (owner.targetProfile) throw "Parent user already has target profile";
+
+    const newTargetProfile = new targetProfile(req.body);
+    newTargetProfile.save((err, targetProfile) => {
+      if (err) res.status(403).send();
+      res.status(201).json(targetProfile);
+    });
+    owner.targetProfile = newTargetProfile._id;
+    owner.save();
+  } catch (error) {
+    res.status(403).json({ error });
+  }
 };
 
 //Updates saved profile
@@ -68,7 +75,7 @@ exports.updateTargetProfile = (req, res) => {
 };
 
 //Deletes saved profile.
-exports.deleteTargetProfile = (req, res) => {
+exports.deleteTargetProfile = async (req, res) => {
   targetProfile.deleteOne({ _id: req.params.targetProfileId }, (err) => {
     if (err) res.send(err);
     res.json({

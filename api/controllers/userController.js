@@ -42,6 +42,7 @@ exports.updateUser = (req, res) => {
   const userToUpdate = req.body;
   if (userToUpdate.img !== null) {
     userToUpdate.img = new Buffer.from(req.body.img, "base64");
+    userToUpdate.lastActive = new Date();
   }
   user.findByIdAndUpdate(
     { _id: req.params.userId },

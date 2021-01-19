@@ -2,6 +2,8 @@
 
 ## CREATE NEW USER
 
+New user can be created with only email and password information. Whenever an user completes their profile, it will be updated accordingly.
+
 **URL**: `/users`
 
 **Method**: `POST`
@@ -9,42 +11,83 @@
 **Data constraints**:
 
 Email must be unique to all other users in the database.
-Required fields: `email(String)` `password(String)` `name(String)` `surname(String)` `gender(Number min: 1, max: 3)` `ageGroup(Number min: 1, max: 8)` `location(String[])`
+Required fields: `email(String)`, `password(String)`
 
 **Data example**:
+User with all possible fields
 
 ```json
 {
-  "email": "example@internet.com",
-  "password": "secret",
-  "name": "Edwin",
-  "surname": "Xample",
+  "location": ["Jyväskylä", "Jämsä"],
+  "personalityTraits": ["social", "active", "happy"],
+  "blockedUsers": ["6001689afab9d01794cdae60"],
+  "_id": "6006b7fccab9a41344bb8fc7",
+  "email": "everything@internet.org",
+  "password": "allMostimportant",
+  "name": "Eva",
+  "surname": "Verything",
+  "img": "\ufffd\ufffd.\ufffd(\ufffd\ufffd*g",
   "ageGroup": 3,
-  "gender": 1,
-  "location": ["Helsinki", "Espoo", "Vantaa"],
-  "rentLimit": 900,
-  "maxRoomMates": 3,
-  "employmentStatus": 3,
-  "description": "A perfect example to live with",
-  "alcohol": 2,
+  "gender": 2,
+  "rentLimit": 700,
+  "maxRoomMates": 2,
+  "employmentStatus": 1,
+  "workType": 1,
+  "description": "Kaiken kaikkiaan kunnollinen",
+  "alcohol": 1,
   "smoking": 1,
   "drugs": 1,
-  "personalityTraits": ["Harkitseva", "Sopeutuvainen", "Määrätietoinen"],
-  "sociality": 2,
-  "pets": false,
-  "hobbies": {
-    "collecting": 1,
-    "crafts": 3,
-    "informationTech": 5,
-    "sports": 4,
-    "music": 1,
-    "games": 5,
-    "reading": 2,
-    "art": 3,
-    "culture": 1,
-    "cooking": 4,
-    "travelling": 1,
-    "voluntaryWork": 1
+  "sociality": 5,
+  "pets": true,
+  "petTypes": [
+    {
+      "dogs": true,
+      "cats": true,
+      "rodents": false,
+      "birds": false,
+      "fishes": false,
+      "terrarium": false,
+      "other": false,
+      "_id": "6006b7fccab9a41344bb8fc8"
+    }
+  ],
+  "hobbies": [
+    {
+      "_id": "6006b7fccab9a41344bb8fc9",
+      "collecting": 1,
+      "crafts": 3,
+      "informationTech": 5,
+      "sports": 4,
+      "music": 1,
+      "games": 5,
+      "reading": 2,
+      "art": 3,
+      "culture": 1,
+      "cooking": 4,
+      "travelling": 1,
+      "voluntaryWork": 1
+    }
+  ],
+  "lastActive": "2021-01-19T10:44:12.312Z",
+  "creationTime": "2021-01-19T10:44:12.312Z",
+  "__v": 0,
+  "targetProfile": {
+    "location": ["Jyväskylä, Jämsä"],
+    "personalityTraits": ["Viileä"],
+    "_id": "6006b8b6cab9a41344bb8fca",
+    "user": "6006b7fccab9a41344bb8fc7",
+    "ageGroup": 3,
+    "gender": 1,
+    "rentLimit": 700,
+    "maxRoomMates": 2,
+    "employmentStatus": 1,
+    "workType": 1,
+    "alcohol": 2,
+    "smoking": 1,
+    "drugs": 1,
+    "petTypes": [],
+    "hobbies": [],
+    "__v": 0
   }
 }
 ```
@@ -56,6 +99,7 @@ Required fields: `email(String)` `password(String)` `name(String)` `surname(Stri
 **Code** : `201 CREATED`
 
 **Content example**:
+Response with user saved to server
 
 ```json
 {
@@ -331,7 +375,7 @@ Gets single user object matching given userId.
 **Data constraints**:
 
 Email must be unique to all other users in the database.
-Required fields: `email(String)` `password(String)` `name(String)` `surname(String)` `gender(Number min: 1, max: 3)` `ageGroup(Number min: 1, max: 8)` `location(String[])`
+Required fields: `email(String)`, `password(String)`
 
 **Data example**:
 Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and Vantaa.
