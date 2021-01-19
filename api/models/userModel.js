@@ -4,26 +4,29 @@ const hobbiesSchema = require("../models/hobbiesSchema");
 
 //User profile. Will contain data from users. Will be compared against targetProfiles of other users to find housemates that match.
 const userSchema = new mongoose.Schema({
+  //MINIMISSÄÄN TARVITTAVAT TIEDOT, AJANKOHDAT MÄÄRITTYVÄT KÄYTTÄJÄN TALLENTUESSA
   email: { type: String, required: true, unique: true },
   //Pitäisi salata jotenkin.
   password: { type: String, required: true },
-  name: { type: String, required: true },
-  surname: { type: String, required: true },
   creationTime: { type: Date, required: true },
   lastActive: { type: Date, required: true },
+
+  //SIVUSTOLLA PROFIILIA LUOTAESSA TÄYTETTÄVÄT TIEDOT
+  name: { type: String },
+  surname: { type: String },
   movingDate: { type: Date },
   //Profiilikuva
   img: { data: Buffer, type: String },
   //Vanhempi on isompi numero.
-  ageGroup: { type: Number, min: 1, max: 8, required: true },
+  ageGroup: { type: Number, min: 1, max: 8 },
   //1-mies, 2-nainen, 3-muu.
-  gender: { type: Number, min: 1, max: 3, required: true },
-  //Onko tässä tarkoitus olla tämänhetkinen asuinkunta vai toiveasuinpaikka/-paikat?
-  location: [{ type: String, required: true }],
+  gender: { type: Number, min: 1, max: 3 },
+  //toiveasuinpaikka/-paikat
+  location: [{ type: String }],
   rentLimit: { type: Number },
   maxRoomMates: { type: Number },
-  //1-työssäkäyvä, 2-työtön, 3-opiskelija, 4-eläkeläinen, 5-varusmies
-  employmentStatus: { type: Number, min: 1, max: 5 },
+  //1-työssäkäyvä, 2-työtön, 3-opiskelija, 4-eläkeläinen
+  employmentStatus: { type: Number, min: 1, max: 4 },
   //1-päivätyö, 2-vuorotyö, 3-yötyö, 4-reissutyö - KYSY JA NÄYTÄ VAIN JOS employmentStatus = 1
   workType: { type: Number, min: 1, max: 4 },
   description: { type: String },
@@ -39,12 +42,13 @@ const userSchema = new mongoose.Schema({
     validate: [arrayLimit, "{PATH} exceeds the limit of 7 personality traits"],
   },
   //1-Yksineläjä ... 5-laumaeläin
-  sociality: { type: Number, min: 1, max: 5 },
+  sociality: { type: Number, min: 1, max: 7 },
   pets: { type: Boolean },
   //Näytä vain jos Pets = true, https://stackoverflow.com/a/49940245{}
   petTypes: [petTypesSchema],
   hobbies: [hobbiesSchema],
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+  //KÄYTTÄJÄN "UNELMAKÄMPPIS JONKA POHJALTA ETSITÄÄN SOPIVIA KÄYTTÄJIÄ"
   targetProfile: {
     max: 1,
     type: mongoose.Schema.Types.ObjectId,

@@ -6,16 +6,17 @@ const hobbiesSchema = require("../models/hobbiesSchema");
 //Mongoose model for preferred housemate profile. This will be compared to other User profiles to find matching housemates.
 const targetProfileSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+
   //Vanhempi on isompi numero.
   ageGroup: { type: Number, min: 1, max: 8, required: true },
   //1-mies, 2-nainen, 3-muu.
   gender: { type: Number, min: 1, max: 3, required: true },
-  //Onko tässä tarkoitus olla tämänhetkinen asuinkunta vai toiveasuinpaikka/-paikat?
+  //toiveasuinpaikka/-paikat?
   location: [{ type: String, required: true }],
   rentLimit: { type: Number },
   maxRoomMates: { type: Number },
-  //1-työssäkäyvä, 2-työtön, 3-opiskelija, 4-eläkeläinen, 5-varusmies
-  employmentStatus: { type: Number, min: 1, max: 5 },
+  //1-työssäkäyvä, 2-työtön, 3-opiskelija, 4-eläkeläinen
+  employmentStatus: { type: Number, min: 1, max: 4 },
   //1-päivätyö, 2-vuorotyö, 3-yötyö, 4-reissutyö - KYSY JA NÄYTÄ VAIN JOS employmentStatus = 1
   workType: { type: Number, min: 1, max: 4 },
   //1-en lainkaan, 2-silloin tällöin, 3-usein, 4-todella paljon
@@ -30,7 +31,7 @@ const targetProfileSchema = new mongoose.Schema({
     validate: [arrayLimit, "{PATH} exceeds the limit of 7 personality traits"],
   },
   //1-Yksineläjä ... 5-laumaeläin
-  sociality: { type: Number, min: 1, max: 5 },
+  sociality: { type: Number, min: 1, max: 7 },
   pets: { type: Boolean },
   //Näytä vain jos Pets = true, https://stackoverflow.com/a/49940245{}
   petTypes: [petTypesSchema],

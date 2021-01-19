@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const targetProfile = mongoose.model("targetProfile");
 const User = mongoose.model("user");
 
+//Gets ALL targert profiles from database
 exports.getAllTargetProfiles = (req, res) => {
   targetProfile
     .find({})
@@ -13,6 +14,7 @@ exports.getAllTargetProfiles = (req, res) => {
     });
 };
 
+//Find target profile by its id
 exports.findTargetProfile = (req, res) => {
   targetProfile
     .findById(req.query.targetProfileId)
@@ -23,7 +25,7 @@ exports.findTargetProfile = (req, res) => {
     });
 };
 
-//KESKEN
+//Finds targetProfiles by their location parameter. Query will be submitted as url parameters.
 exports.findTargetProfilesByLocation = async (req, res) => {
   const allLocations = req.query.location.split(",");
   console.log(allLocations);
@@ -39,6 +41,7 @@ exports.findTargetProfilesByLocation = async (req, res) => {
   res.json(result);
 };
 
+//Creates a target profile and saves it to database. If a user id is given, also creates a reference to the user.
 exports.createTargetProfile = async (req, res) => {
   const newTargetProfile = new targetProfile(req.body);
   console.log(req.body);
@@ -51,6 +54,7 @@ exports.createTargetProfile = async (req, res) => {
   owner.save();
 };
 
+//Updates saved profile
 exports.updateTargetProfile = (req, res) => {
   targetProfile.findByIdAndUpdate(
     { _id: req.params.targetProfileId },
@@ -63,6 +67,7 @@ exports.updateTargetProfile = (req, res) => {
   );
 };
 
+//Deletes saved profile.
 exports.deleteTargetProfile = (req, res) => {
   targetProfile.deleteOne({ _id: req.params.targetProfileId }, (err) => {
     if (err) res.send(err);
