@@ -27,6 +27,7 @@ exports.createUser = (req, res) => {
   //Lisätään luonnin yhteydessä lastActive-kenttä, jotta voidaan poistaa inaktiiviset käyttäjät.
   userDetails.lastActive = new Date();
   userDetails.creationTime = new Date();
+  userDetails.email = userDetails.email.toLowerCase();
   if (userDetails.img !== null) {
     userDetails.img = new Buffer.from(req.body.img, "base64");
   }

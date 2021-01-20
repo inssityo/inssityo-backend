@@ -146,11 +146,22 @@ Response with user saved to server
 
 ## Error Responses
 
-**Condition** : If given email is already related to a user in the Database.
+**Condition** : If given email is already related to a user in the Database. The email addresses given to the server are converted to lower case to avoid duplication with case mismatch.
 
 **Code** : `403 FORBIDDEN`
 
-**Content example** : `{ "driver": true, "name": "MongoError", "index": 0, "code": 11000, "keyPattern": { "email": 1 }, "keyValue": { "email": "example@internet.com" }}`
+**Content example**:
+
+```json
+{
+  "driver": true,
+  "name": "MongoError",
+  "index": 0,
+  "code": 11000,
+  "keyPattern": { "email": 1 },
+  "keyValue": { "email": "example@internet.com" }
+}
+```
 
 ### Or
 
