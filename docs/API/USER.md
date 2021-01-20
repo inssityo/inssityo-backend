@@ -1,5 +1,7 @@
 # USER
 
+The user model holds user data about them, their lifestyle and current situation. The data is used to connect people to make new roommates.
+
 ## CREATE NEW USER
 
 New user can be created with only email and password information. Whenever an user completes their profile, it will be updated accordingly.
@@ -150,7 +152,7 @@ Response with user saved to server
 
 **Code** : `403 FORBIDDEN`
 
-**Content example**:
+**Response example**:
 
 ```json
 {
@@ -169,7 +171,7 @@ Response with user saved to server
 
 **Code** : `403 FORBIDDEN`
 
-**Content example**
+**Response example**
 Here, field `email` was intentionally left out.
 
 ```json
@@ -198,7 +200,7 @@ Here, field `email` was intentionally left out.
 
 **Code** : `403 FORBIDDEN`
 
-**Content example**:
+**Response example**:
 
 ```json
 {

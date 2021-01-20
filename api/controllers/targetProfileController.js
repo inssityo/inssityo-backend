@@ -28,15 +28,18 @@ exports.findTargetProfile = (req, res) => {
 //Finds targetProfiles by their location parameter. Query will be submitted as url parameters.
 exports.findTargetProfilesByLocation = async (req, res) => {
   const allLocations = req.query.location.split(",");
-  console.log(allLocations);
   let result;
   try {
     result = await targetProfile
       .find({ location: { $in: allLocations } })
       .populate("user");
+    if (result.length === 0) {
+      throw {
+        error: `No profiles found with ${allLocations} as location values!`,
+      };
+    }
   } catch (err) {
-    console.log(err);
-    return res.status(404).send();
+    return res.status(404).send(err);
   }
   res.json(result);
 };

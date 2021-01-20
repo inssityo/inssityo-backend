@@ -1,5 +1,7 @@
 # TARGET PROFILE
 
+Target profiles are arrays of properties representing the ideal room-/housemate for the users who make them. They are then compared to other users' profiles to find suitable roommates.
+
 ## CREATE NEW TARGET PROFILE
 
 Target profiles require at least the preferred gender, ageGroup and location options. A target profile must also always be connected to the user who created it.
@@ -164,7 +166,7 @@ Here, field `user` was intentionally left out.
 
 ```json
 {
-    "error": "Parent user already has target profile
+  "error": "Parent user already has target profile"
 }
 ```
 
@@ -359,6 +361,164 @@ Gets single target profile object matching given targetprofileId. Populates `use
 }
 ```
 
+## GET TARGET PROFILES BY LOCATION
+
+**URL**: `/targetProfiles/location/?`
+
+**Method**: `GET`
+
+**QUERY CONSTRAINTS**: When querying multiple locations, separate each value with ','.
+
+## SUCCESS RESPONSE
+
+**URL**: `localhost:3000/targetProfiles/location/?location=Honolulu,Reykjavik`
+
+**CODE** `200 OK`
+
+**RESPONSE EXAMPLE**
+Response contains all target profiles that have Honolulu or Reykjavik in their `location` values.
+
+```json
+[
+  {
+    "gender": [1],
+    "location": ["Helsinki", "Honolulu"],
+    "personalityTraits": ["Sosiaalinen", "Villi", "Aurinkoinen"],
+    "_id": "60016952fab9d01794cdae65",
+    "user": {
+      "location": ["Helsinki"],
+      "personalityTraits": ["Harkitseva", "Sopeutuvainen", "Määrätietoinen"],
+      "blockedUsers": [],
+      "_id": "60016903fab9d01794cdae63",
+      "email": "hawai@internet1.org",
+      "password": "salainen",
+      "name": "Makke",
+      "surname": "Mallikas",
+      "img": "\u0087\ufffd~7\ufffd\ufffd'\ufffd{\n\u001e~",
+      "ageGroup": 3,
+      "gender": 1,
+      "rentLimit": 900,
+      "maxRoomMates": 9,
+      "employmentStatus": 3,
+      "description": "Mallikelpoinen",
+      "alcohol": 2,
+      "smoking": 1,
+      "drugs": 1,
+      "sociality": 2,
+      "pets": false,
+      "hobbies": [
+        {
+          "_id": "60016903fab9d01794cdae64",
+          "collecting": 1,
+          "crafts": 3,
+          "informationTech": 5,
+          "sports": 4,
+          "music": 1,
+          "games": 5,
+          "reading": 2,
+          "art": 3,
+          "culture": 1,
+          "cooking": 4,
+          "travelling": 1,
+          "voluntaryWork": 1
+        }
+      ],
+      "lastActive": "2021-01-15T10:05:55.183Z",
+      "creationTime": "2021-01-15T10:05:55.183Z",
+      "petTypes": [],
+      "__v": 0,
+      "targetProfile": "60016952fab9d01794cdae65"
+    },
+    "ageGroup": 3,
+    "rentLimit": 900,
+    "maxRoomMates": 2,
+    "employmentStatus": 3,
+    "alcohol": 2,
+    "smoking": 1,
+    "drugs": 1,
+    "petTypes": [],
+    "hobbies": [],
+    "__v": 0
+  },
+  {
+    "gender": [1],
+    "location": ["Reykjavik"],
+    "personalityTraits": ["Viileä"],
+    "_id": "60016a0ffab9d01794cdae68",
+    "user": {
+      "location": ["Helsinki", "Reykjavik"],
+      "personalityTraits": ["Harkitseva", "Sopeutuvainen", "Määrätietoinen"],
+      "blockedUsers": [],
+      "_id": "600169d4fab9d01794cdae66",
+      "email": "iceland@internet1.org",
+      "password": "salainen",
+      "name": "Maija",
+      "surname": "Mallikas",
+      "img": "\u0087\ufffd~7\ufffd\u007f\u0007\ufffd\ufffd\ufffd\"~7\ufffd\ufffd\ufffd\ufffd",
+      "ageGroup": 3,
+      "gender": 1,
+      "rentLimit": 900,
+      "maxRoomMates": 9,
+      "employmentStatus": 3,
+      "description": "Mallikelpoinen",
+      "alcohol": 2,
+      "smoking": 1,
+      "drugs": 1,
+      "sociality": 2,
+      "pets": false,
+      "hobbies": [
+        {
+          "_id": "600169d4fab9d01794cdae67",
+          "collecting": 1,
+          "crafts": 3,
+          "informationTech": 5,
+          "sports": 4,
+          "music": 1,
+          "games": 5,
+          "reading": 2,
+          "art": 3,
+          "culture": 1,
+          "cooking": 4,
+          "travelling": 1,
+          "voluntaryWork": 1
+        }
+      ],
+      "lastActive": "2021-01-15T10:09:24.771Z",
+      "creationTime": "2021-01-15T10:09:24.771Z",
+      "petTypes": [],
+      "__v": 0,
+      "targetProfile": "60016a0ffab9d01794cdae68"
+    },
+    "ageGroup": 3,
+    "rentLimit": 900,
+    "maxRoomMates": 2,
+    "employmentStatus": 3,
+    "alcohol": 2,
+    "smoking": 1,
+    "drugs": 1,
+    "petTypes": [],
+    "hobbies": [],
+    "__v": 0
+  }
+]
+```
+
+## ERROR RESPONSES
+
+Querying for a location that doesn't appear in any location fields in the targetProfiles collection.
+
+**URL**: `/targetProfiles/location/?location=Quebec`
+
+**CODE**: `404 NOT FOUND`
+
+**RESPONSE EXAMPLE**:
+
+```json
+{
+  "error": "No profiles found with Quebec as location values!"
+}
+```
+
 ## UPDATE EXISTING TARGET PROFILE
 
 **URL**: `/targetProfiles/:targetProfileId`
@@ -430,7 +590,6 @@ Changing Eva's target profile's preferred roommate's gender to only woman.
 
 ```json
 {
-    {
     "gender": [
         2
     ],

@@ -75,4 +75,17 @@ userSchema.pre("deleteOne", function (next) {
     });
 });
 
+// - - TESTAA - - Middleware to handle deletion of user reference in interestedUsers arrays of apartments upon user deletion.
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("apartment")
+    .updateMany(
+      { interestedUsers: query._conditions._id },
+      { $unset: { targetProfile: 1 } },
+      { multi: false },
+      next
+    );
+});
+
 module.exports = mongoose.model("user", userSchema);

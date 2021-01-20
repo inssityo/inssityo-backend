@@ -6,8 +6,10 @@ require("dotenv").config();
 
 global.User = require("./api/models/userModel");
 global.targetProfile = require("./api/models/targetProfileModel");
+global.apartment = require("./api/models/apartmentModel");
 const userRoutes = require("./api/routes/userRoutes");
 const targetProfileRoutes = require("./api/routes/targetProfileRoutes");
+const apartmentRoutes = require("./api/routes/apartmentRoutes");
 
 mongoose.Promise = global.Promise;
 mongoose.set("useFindAndModify", false);
@@ -32,6 +34,7 @@ app.use(bodyParser.json());
 
 userRoutes(app);
 targetProfileRoutes(app);
+apartmentRoutes(app);
 app.listen(port);
 
 app.use((req, res) => {
