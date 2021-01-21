@@ -29,6 +29,7 @@ exports.createUser = (req, res) => {
   userDetails.creationTime = new Date();
   userDetails.email = userDetails.email.toLowerCase();
   if (userDetails.img !== null) {
+    // eslint-disable-next-line no-undef
     userDetails.img = new Buffer.from(req.body.img, "base64");
   }
   const newUser = new user(userDetails);
@@ -42,6 +43,7 @@ exports.createUser = (req, res) => {
 exports.updateUser = (req, res) => {
   const userToUpdate = req.body;
   if (userToUpdate.img !== null) {
+    // eslint-disable-next-line no-undef
     userToUpdate.img = new Buffer.from(req.body.img, "base64");
     userToUpdate.lastActive = new Date();
   }
