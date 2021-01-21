@@ -27,7 +27,9 @@ exports.createUser = (req, res) => {
   //Lisätään luonnin yhteydessä lastActive-kenttä, jotta voidaan poistaa inaktiiviset käyttäjät.
   userDetails.lastActive = new Date();
   userDetails.creationTime = new Date();
-  userDetails.email = userDetails.email.toLowerCase();
+  if (userDetails.email) {
+    userDetails.email = userDetails.email.toLowerCase();
+  }
   if (userDetails.img !== null) {
     // eslint-disable-next-line no-undef
     userDetails.img = new Buffer.from(req.body.img, "base64");
@@ -41,15 +43,15 @@ exports.createUser = (req, res) => {
 
 //Tämä vaatii, että pyynnön bodyssä lähetetään user-olio.
 exports.updateUser = (req, res) => {
-  const userToUpdate = req.body;
+  let userToUpdate = req.body;
+  userToUpdate.lastActive = new Date();
   if (userToUpdate.img !== null) {
     // eslint-disable-next-line no-undef
     userToUpdate.img = new Buffer.from(req.body.img, "base64");
-    userToUpdate.lastActive = new Date();
   }
   user.findByIdAndUpdate(
     { _id: req.params.userId },
-    req.body,
+    userToUpdate,
     { new: true },
     (err, user) => {
       if (err) res.status(403).send(err);

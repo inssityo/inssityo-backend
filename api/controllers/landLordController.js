@@ -12,9 +12,17 @@ exports.getAllLandLords = (req, res) => {
 //Creates a new landlord user and saves it to database.
 exports.createLandLord = (req, res) => {
   const newLandlord = new landLord(req.body);
+  newLandlord.creationTime = new Date();
+  newLandlord.lastActive = new Date();
+  if (newLandlord.email) {
+    newLandlord.email = newLandlord.email.toLowerCase();
+  }
+  if (newLandlord.img !== null) {
+    newLandlord.img = new Buffer.from(newLandlord.img, "base64");
+  }
   newLandlord.save((err, landLord) => {
-    if (err) res.send(err);
-    res.json(landLord);
+    if (err) res.status(403).send(err);
+    res.status(201).json(landLord);
   });
 };
 
@@ -28,9 +36,11 @@ exports.getLandlordById = (req, res) => {
 
 //Updates landlord with given request params with specified request body data.
 exports.updateLandLord = (req, res) => {
+  let landlordToUpdate = req.body;
+  landlordToUpdate.lastActive = new Date();
   landLord.findByIdAndUpdate(
     { _id: req.params.landLordId },
-    req.body,
+    landlordToUpdate,
     { new: true },
     (err, landLord) => {
       if (err) res.status(403).send(err);
@@ -40,9 +50,13 @@ exports.updateLandLord = (req, res) => {
 };
 
 //Deletes a landlord with Id specified in request params. Pre delete hook to delete all child apartments of landlord in landlordModel.js
-exports.deleteLandLord = (req, res) => {
-  landLord.deleteOne({ _id: req.params.landLordId }, (err) => {
-    if (err) res.status(404).send(err);
-    res.json({ message: "landlord deleted", _id: req.params.landLordId });
+exports.deleteLandLord = async (req, res) => {
+  console.log(req.params);
+  await landLord.deleteOne({ _id: req.params.landLordId }, (err) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json({ message: "landlord deleted", _id: req.params.landLordId });
+    }
   });
 };

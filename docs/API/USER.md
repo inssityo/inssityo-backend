@@ -368,7 +368,7 @@ Gets single user object matching given userId.
 
 **Code**: `404 NOT FOUND`
 
-**Content example**:
+**Response example**:
 
 ```json
 {    "stringValue": "\"4567456hrtg\"",
@@ -482,13 +482,13 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 
 ## Error Responses
 
-**Condition** : Trying to update into a email address that's already taken.
+**Condition** : Trying to update into an email address that's already taken.
 
-**URL**: `localhost:3000/users/5ffed7f1d4d8da2c14dc3c4e`
+**URL**: `/users/5ffed7f1d4d8da2c14dc3c4e`
 
 **Code**: `403 FORBIDDEN `
 
-**Content example**:
+**Response example**:
 
 ```json
 {

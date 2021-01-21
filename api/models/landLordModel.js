@@ -28,7 +28,7 @@ landLordSchema.pre("deleteOne", function (next) {
   let query = this;
   mongoose
     .model("apartment")
-    .deleteMany({ landlord: query.conditions._id }, next);
+    .deleteMany({ landlord: query._conditions._id }, next);
 });
 
-module.exports = mongoose.model("landlord", landLordSchema);
+module.exports = mongoose.model("landLord", landLordSchema);
