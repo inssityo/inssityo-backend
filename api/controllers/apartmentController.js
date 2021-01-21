@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const apartment = mongoose.model("apartment");
+const landLord = mongoose.model("landLord");
 
 //Gets ALL target profiles from database
 exports.getApartments = (req, res) => {
@@ -20,11 +21,28 @@ exports.findApartment = (req, res) => {
     });
 };
 
+//Find a landlord's apartments by landlord ID
+exports.findLandlordApts = (req, res) => {
+  let result;
+  try {
+    result = apartment.find({ landlord: req.params.landLordId });
+    if (result.length === 0) {
+      throw {
+        error: `No apartments found for landlord with ID of ${req.params.landLordId}`,
+      };
+    }
+  } catch (err) {
+    return res.status(404).send(err);
+  }
+  res.json(result);
+};
+
+//Find apartments by their location value.
 exports.findApartmentsByLocation = async (req, res) => {
   const allLocations = req.query.location.split(",");
   let result;
   try {
-    result = await apartment.find({ location: { $in: allLocations } });
+    result = await apartment.find({ "location.city": { $in: allLocations } });
     if (result.length === 0) {
       throw {
         error: `No apartments found with ${allLocations} as location values!`,
@@ -36,6 +54,7 @@ exports.findApartmentsByLocation = async (req, res) => {
   res.json(result);
 };
 
+// Creates new apartment and saves it to the specified landlord's apartment array.
 exports.createApartment = async (req, res) => {
   try {
     const owner = await landLord.findById(req.body.landLord);
@@ -47,6 +66,7 @@ exports.createApartment = async (req, res) => {
       if (err) res.status(403).send(err);
       res.status(201).json(apartment);
     });
+    //Save to landlord's apartment array
     owner.apartments.push(newApartment._id);
     owner.save();
   } catch (error) {
@@ -54,6 +74,7 @@ exports.createApartment = async (req, res) => {
   }
 };
 
+//Updates apartment data from request body
 exports.updateApartment = (req, res) => {
   apartment.findByIdAndUpdate(
     { _id: req.params.apartmentId },
@@ -66,6 +87,7 @@ exports.updateApartment = (req, res) => {
   );
 };
 
+//Deletes apartment. Pre delete hook for landlord ref deletion in apartmentModel.js
 exports.deleteApartment = (req, res) => {
   apartment.deleteOne({ _id: req.params.apartmentId }, (err) => {
     if (err) res.send(err);

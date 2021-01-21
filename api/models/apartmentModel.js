@@ -6,8 +6,10 @@ const apartmentSchema = new mongoose.Schema(
     landLord: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "landLord",
+      required: true,
     },
     //Kuvat
+    // eslint-disable-next-line no-undef
     images: [{ data: Buffer, type: String }],
     //Vapaamuotoinen kuvaus
     description: { type: String, required: true },
@@ -36,6 +38,8 @@ const apartmentSchema = new mongoose.Schema(
     isCellApartment: { type: Boolean, required: true },
     //Kerrosluku esim 2/4.
     floor: { type: "String" },
+    hasElevator: { type: Boolean },
+    parkingIncluded: { type: Boolean },
     //Muutettavissa alk. pvm.
     availableFrom: { type: Date, required: true },
     //Sopimus voimassa. Miten ilmaistaan toistaiseksi?

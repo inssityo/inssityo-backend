@@ -7,13 +7,16 @@ require("dotenv").config();
 global.User = require("./api/models/userModel");
 global.targetProfile = require("./api/models/targetProfileModel");
 global.apartment = require("./api/models/apartmentModel");
+global.landLord = require("./api/models/landLordModel");
 const userRoutes = require("./api/routes/userRoutes");
 const targetProfileRoutes = require("./api/routes/targetProfileRoutes");
 const apartmentRoutes = require("./api/routes/apartmentRoutes");
+const landLordRoutes = require("./api/routes/landLordRoutes");
 
 mongoose.Promise = global.Promise;
 mongoose.set("useFindAndModify", false);
 mongoose
+  // eslint-disable-next-line no-undef
   .connect(process.env.MONGODB_CONNECTION_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -25,6 +28,7 @@ mongoose
     console.log(err);
   });
 
+// eslint-disable-next-line no-undef
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -35,6 +39,7 @@ app.use(bodyParser.json());
 userRoutes(app);
 targetProfileRoutes(app);
 apartmentRoutes(app);
+landLordRoutes(app);
 app.listen(port);
 
 app.use((req, res) => {

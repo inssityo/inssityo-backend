@@ -1,9 +1,8 @@
-const { json } = require("body-parser");
 const mongoose = require("mongoose");
 const targetProfile = mongoose.model("targetProfile");
 const User = mongoose.model("user");
 
-//Gets ALL targert profiles from database
+//Gets ALL target profiles from database
 exports.getAllTargetProfiles = (req, res) => {
   targetProfile
     .find({})
@@ -54,7 +53,7 @@ exports.createTargetProfile = async (req, res) => {
 
     const newTargetProfile = new targetProfile(req.body);
     newTargetProfile.save((err, targetProfile) => {
-      if (err) res.status(403).send();
+      if (err) res.status(403).send(err);
       res.status(201).json(targetProfile);
     });
     owner.targetProfile = newTargetProfile._id;
@@ -71,7 +70,7 @@ exports.updateTargetProfile = (req, res) => {
     req.body,
     { new: true },
     (err, targetProfile) => {
-      if (err) res.status(403).send();
+      if (err) res.status(403).send(err);
       res.json(targetProfile);
     }
   );

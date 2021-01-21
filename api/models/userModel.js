@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
   surname: { type: String },
   movingDate: { type: Date },
   //Profiilikuva
+  // eslint-disable-next-line no-undef
   img: { data: Buffer, type: String },
   //Vanhempi on isompi numero.
   ageGroup: { type: Number, min: 1, max: 8 },
