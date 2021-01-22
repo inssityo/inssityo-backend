@@ -16,7 +16,7 @@ Email must be unique to all other users in the database.
 Required fields: `email(String)`, `password(String)`
 
 **Data example**:
-User with all possible fields
+User with all possible fields:
 
 ```json
 {
@@ -101,7 +101,7 @@ User with all possible fields
 **Code** : `201 CREATED`
 
 **Content example**:
-Response with user saved to server
+Response with user saved to server:
 
 ```json
 {
@@ -146,7 +146,7 @@ Response with user saved to server
 }
 ```
 
-## Error Responses
+## Error responses
 
 **Condition** : If given email is already related to a user in the Database. The email addresses given to the server are converted to lower case to avoid duplication with case mismatch.
 
@@ -167,11 +167,11 @@ Response with user saved to server
 
 ### Or
 
-**Condition** : If fields are missing.
+**Condition** : If required fields are missing.
 
 **Code** : `403 FORBIDDEN`
 
-**Response example**
+**Response example**:
 Here, field `email` was intentionally left out.
 
 ```json
@@ -252,10 +252,10 @@ Gets all users currently in the database.
 
 **Method** : `GET`
 
-## Success Response
+## Success response
 
 **Code** : `200 OK`
-**Content example** :
+**Response example** :
 
 ```json
 [
@@ -309,13 +309,13 @@ Gets single user object matching given userId.
 
 **Method** : `GET`
 
-## Success Response
+## Success response
 
 **URL** : `/users/5ffed7f1d4d8da2c14dc3c4e`
 
 **Code** : `200 OK`
 
-**Content example** :
+**Response example** :
 
 ```json
 {
@@ -360,7 +360,7 @@ Gets single user object matching given userId.
 }
 ```
 
-## Error Responses
+## Error responses
 
 **Condition** : If searched with non-existing userId.
 
@@ -429,7 +429,7 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 }
 ```
 
-## Success Response
+## Success response
 
 **URL** : `/users/5ffed7f1d4d8da2c14dc3c4e`
 

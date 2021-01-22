@@ -22,13 +22,12 @@ const landLordSchema = new mongoose.Schema(
   { collection: "landlords" }
 );
 
-//TESTAA
 //Deletion of all child apartments on landlord deletion.
 landLordSchema.pre("deleteOne", function (next) {
   let query = this;
   mongoose
     .model("apartment")
-    .deleteMany({ landlord: query._conditions._id }, next);
+    .deleteOne({ landLord: query._conditions._id }, next);
 });
 
 module.exports = mongoose.model("landLord", landLordSchema);

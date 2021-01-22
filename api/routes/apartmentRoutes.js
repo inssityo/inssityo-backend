@@ -3,7 +3,7 @@ const apartmentController = require("../controllers/apartmentController");
 module.exports = (app) => {
   app
     //Can be used to get all apartments from service.
-    .route("/apartments/")
+    .route("/apartments")
     .get(apartmentController.getApartments)
     .post(apartmentController.createApartment);
 
@@ -21,6 +21,6 @@ module.exports = (app) => {
 
   app
     //Get all apartments of a single landlord.
-    .route("landlordApts/:landlordId")
+    .route("/landlordApts/:landLordId")
     .get(apartmentController.findLandlordApts);
 };

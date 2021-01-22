@@ -51,7 +51,6 @@ exports.updateLandLord = (req, res) => {
 
 //Deletes a landlord with Id specified in request params. Pre delete hook to delete all child apartments of landlord in landlordModel.js
 exports.deleteLandLord = async (req, res) => {
-  console.log(req.params);
   await landLord.deleteOne({ _id: req.params.landLordId }, (err) => {
     if (err) {
       res.send(err);

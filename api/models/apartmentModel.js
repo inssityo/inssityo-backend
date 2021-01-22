@@ -78,17 +78,12 @@ const apartmentSchema = new mongoose.Schema(
   { collection: "apartments" }
 );
 
-//TESTAA TOIMIIKO, JOS MONTA ASUNTOA JA VAIN YKSI POISTETAAN!
+//Middleware to handle deletion of apartment ref from landlord upon apartment deletion
 apartmentSchema.pre("deleteOne", function (next) {
   let query = this;
   mongoose
     .model("landLord")
-    .updateOne(
-      { apartment: query.conditions._id },
-      { $unset: { apartment: 1 } },
-      { multi: false },
-      next
-    );
+    .updateOne({}, { $pull: { apartments: query._conditions._id } }, next);
 });
 
 module.exports = mongoose.model("apartment", apartmentSchema);

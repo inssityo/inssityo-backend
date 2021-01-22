@@ -82,9 +82,8 @@ userSchema.pre("deleteOne", function (next) {
   mongoose
     .model("apartment")
     .updateMany(
-      { interestedUsers: query._conditions._id },
-      { $unset: { targetProfile: 1 } },
-      { multi: false },
+      {},
+      { $pull: { interestedUsers: query._conditions._id } },
       next
     );
 });

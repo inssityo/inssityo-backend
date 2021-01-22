@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const apartment = mongoose.model("apartment");
 const landLord = mongoose.model("landLord");
 
-//Gets ALL target profiles from database
+//Gets ALL apartments from database
 exports.getApartments = (req, res) => {
   apartment.find({}, (err, apartments) => {
-    if (err) res.send(err);
+    if (err) res.status(404).send(err);
     res.json(apartments);
   });
 };
@@ -22,10 +22,10 @@ exports.findApartment = (req, res) => {
 };
 
 //Find a landlord's apartments by landlord ID
-exports.findLandlordApts = (req, res) => {
+exports.findLandlordApts = async (req, res) => {
   let result;
   try {
-    result = apartment.find({ landlord: req.params.landLordId });
+    result = await apartment.find({ landLord: req.params.landLordId });
     if (result.length === 0) {
       throw {
         error: `No apartments found for landlord with ID of ${req.params.landLordId}`,
@@ -62,6 +62,13 @@ exports.createApartment = async (req, res) => {
     if (!owner) throw "Parent landlord not found or defined in request body";
 
     const newApartment = new apartment(req.body);
+    if (newApartment.images !== null) {
+      let imgArr = newApartment.images;
+      imgArr.forEach(
+        (element, index) => (imgArr[index] = new Buffer.from(element, "base64"))
+      );
+      newApartment.images = imgArr;
+    }
     newApartment.save((err, apartment) => {
       if (err) res.status(403).send(err);
       res.status(201).json(apartment);
@@ -88,12 +95,12 @@ exports.updateApartment = (req, res) => {
 };
 
 //Deletes apartment. Pre delete hook for landlord ref deletion in apartmentModel.js
-exports.deleteApartment = (req, res) => {
-  apartment.deleteOne({ _id: req.params.apartmentId }, (err) => {
-    if (err) res.send(err);
-    res.json({
-      message: "apartment successfully deleted",
-      _id: req.params.apartmentId,
-    });
+exports.deleteApartment = async (req, res) => {
+  await apartment.deleteOne({ _id: req.params.apartmentId }, (err) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json({ message: "apartment deleted", _id: req.params.apartmentId });
+    }
   });
 };
