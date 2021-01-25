@@ -32,29 +32,39 @@ const apartmentSchema = new mongoose.Schema(
     //Vuokravakuus, esim 2kk vuokra tai tietty summa.
     guarantee: { type: String },
     buildYear: { type: Number },
-    //Kerrostalo, paritalo, rivitalo, OKT jne. Tehdäänkö tästä numero?
-    apartmentType: { type: String, required: true },
+    //1-kerrostalo 2-rivitalo 3-paritalo 4-omakotitalo 5-ketjutalo 6-muu?
+    apartmentType: { type: Number, required: true },
     //Onko soluasunto tai sen yksi huone?
     isCellApartment: { type: Boolean, required: true },
     //Kerrosluku esim 2/4.
     floor: { type: "String" },
     hasElevator: { type: Boolean },
-    parkingIncluded: { type: Boolean },
     //Muutettavissa alk. pvm.
     availableFrom: { type: Date, required: true },
-    //Sopimus voimassa. Miten ilmaistaan toistaiseksi?
+    //Sopimus voimassa. Kokeillaan laittaa timestamp arvolla 0 frontendissä klikkaamalla valinta "toistaiseksi".
     availableUntil: { type: Date, required: true },
     //Vapaamuotoinen tekstikenttä asunnon varusteluista. Onko pyykkikonetta vai yhteinen pesutupa? Valmiiksi kalustettu vai ei?
     equipment: { type: String },
     //Jonkinlainen kuntoluokittelu.
     condition: { type: Number },
+    // TEE TÄHÄN TERMS - OLIO, LISÄÄ KOTIVAKUUTUKSEN PAKOLLISUUS
     petsAllowed: { type: Boolean, required: true },
     smokingAllowed: { type: Boolean, required: true },
-    includesWater: { type: Boolean },
-    includesElectricity: { type: Boolean },
-    dataConnection: {
-      isIncluded: { type: Boolean },
-      speed: { type: Number },
+    utilities: {
+      insurancePlan: {
+        mustHave: { type: Boolean },
+        monthlyPrice: { type: Number },
+      },
+      parkingIncluded: { type: Boolean },
+      water: { mustHave: { type: Boolean }, monthlyPrice: { type: Number } },
+      includesElectricity: {
+        mustHave: { type: Boolean },
+        monthlyPrice: { type: Number },
+      },
+      dataConnection: {
+        isIncluded: { type: Boolean },
+        speed: { type: Number },
+      },
     },
     //Listaus lähimpiä palveluita. Ilmoitusmuoto {title:Nimike, esim bussipysäkki Kurkimäki, distance:Etäisyys metreinä, esim 400}
     nearbyServices: {
