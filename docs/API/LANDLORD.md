@@ -33,7 +33,7 @@ Required fields: `email(String)`, `password(String)`
 **Code**: `201 CREATED`
 
 **Content example**:
-Response with user saved to server
+Response with user saved to server.
 
 ```json
 {
@@ -53,7 +53,7 @@ Response with user saved to server
 
 ## Error Responses
 
-**Condition**: If given email is already related to a landlord in the database. The email addresses given to the server are converted to lower case to avoid dupliavtion with case mismatch.
+**Condition**: If given email is already related to a landlord in the database. The email addresses given to the server are converted to lower case to avoid duplication with case mismatch.
 
 **Code**: `403 FORBIDDEN`
 

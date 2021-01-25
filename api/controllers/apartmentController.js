@@ -69,6 +69,8 @@ exports.createApartment = async (req, res) => {
       );
       newApartment.images = imgArr;
     }
+    //initialize view counter
+    newApartment.viewCount = 0;
     newApartment.save((err, apartment) => {
       if (err) res.status(403).send(err);
       res.status(201).json(apartment);

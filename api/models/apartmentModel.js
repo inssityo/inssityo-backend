@@ -13,10 +13,13 @@ const apartmentSchema = new mongoose.Schema(
     images: [{ data: Buffer, type: String }],
     //Vapaamuotoinen kuvaus
     description: { type: String, required: true },
+    viewCount: { type: Number },
     //Huoneet & tilat, esim 2H+kk, sauna
     floorPlan: { type: String, required: true },
     //Asuinpinta-ala esim 66m^2
     area: { type: Number, required: true },
+    //Yksittäisen soluhuoneen pinta-ala esim 12m^2
+    cellArea: { type: Number },
     location: {
       //Helsinki
       city: { type: String, required: true },
@@ -29,10 +32,10 @@ const apartmentSchema = new mongoose.Schema(
     },
     //Kuukausivuokra
     monthlyRent: { type: Number, required: true },
-    //Vuokravakuus, esim 2kk vuokra tai tietty summa.
+    //Vuokravakuus, esim 2kk vuokra tai tietty summa. Myös mahd. sitoutumisvaatimus.
     guarantee: { type: String },
     buildYear: { type: Number },
-    //1-kerrostalo 2-rivitalo 3-paritalo 4-omakotitalo 5-ketjutalo 6-muu?
+    //1-kerrostalo 2-rivitalo 3-paritalo 4-omakotitalo 5-ketjutalo 6-Luhtitalo 7-Puutalo-osake 8-muu?
     apartmentType: { type: Number, required: true },
     //Onko soluasunto tai sen yksi huone?
     isCellApartment: { type: Boolean, required: true },
