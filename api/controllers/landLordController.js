@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const landLordModel = require("../models/landLordModel");
 const landLord = mongoose.model("landLord");
 
 //Gets all landlords from database
@@ -32,8 +33,12 @@ exports.getLandlordById = (req, res) => {
     .findById(req.params.landLordId)
     .populate("apartments")
     .exec(function (err, landlord) {
-      if (err) res.status(404).send(err);
-      res.json(landlord);
+      if (landlord) {
+        res.json(landlord);
+      } else {
+        err = { error: "No landlord found with given id" };
+        res.status(404).send(err);
+      }
     });
 };
 

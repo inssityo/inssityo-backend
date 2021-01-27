@@ -169,7 +169,7 @@ Gets single landlord object matching given landLordId.
 
 **Condition** : If searched with non-existing landLordId.
 
-**URL**: `/landlords/3wefgeyh53tg3gf23r`
+**URL**: `/landlords/600fff278e4dd707e8b8ebac`
 
 **Code**: `404 NOT FOUND`
 
@@ -177,11 +177,7 @@ Gets single landlord object matching given landLordId.
 
 ```json
 {
-  "stringValue": "\"3wefgeyh53tg3gf23r\"",
-  "kind": "ObjectId",
-  "value": "3wefgeyh53tg3gf23r",
-  "path": "_id",
-  "reason": {}
+  "error": "No landlord found with given id"
 }
 ```
 

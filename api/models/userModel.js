@@ -100,7 +100,7 @@ userSchema.pre("deleteOne", function (next) {
 userSchema.pre("deleteOne", function (next) {
   var query = this;
   mongoose
-    .model("landlord")
+    .model("landLord")
     .updateMany({}, { $pull: { blockedUsers: query._conditions._id } }, next);
 });
 

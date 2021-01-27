@@ -533,7 +533,7 @@ Populated landLord for easy data access.
 
 **Condition**: If searched with non-existing userId.
 
-**URL**: `/apartments/lihrjpogiehnrpog`
+**URL**: `/apartments/601005dc599cfb4664a03163`
 
 **Code**: `404 NOT FOUND`
 
@@ -541,11 +541,7 @@ Populated landLord for easy data access.
 
 ```json
 {
-  "stringValue": "\"lihrjpogiehnrpog\"",
-  "kind": "ObjectId",
-  "value": "lihrjpogiehnrpog",
-  "path": "_id",
-  "reason": {}
+  "error": "No apartment found with given id"
 }
 ```
 

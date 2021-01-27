@@ -371,12 +371,9 @@ Gets single user object matching given userId.
 **Response example**:
 
 ```json
-{    "stringValue": "\"4567456hrtg\"",
-    "kind": "ObjectId",
-    "value": "4567456hrtg",
-    "path": "_id",
-    "reason": {}}
-    }
+{
+  "error": "No user found with given id"
+}
 ```
 
 ## GET USERS BY LOCATION

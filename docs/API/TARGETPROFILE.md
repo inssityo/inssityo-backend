@@ -345,7 +345,7 @@ Gets single target profile object matching given targetprofileId. Populates `use
 
 **Condition** : If searched with non-existing userId.
 
-**URL**: `/targetProfiles/234gferf24r`
+**URL**: `/targetprofiles/600fef59bd6cc80168cadfab`
 
 **Code**: `404 NOT FOUND`
 
@@ -353,11 +353,7 @@ Gets single target profile object matching given targetprofileId. Populates `use
 
 ```json
 {
-  "stringValue": "\"234gferf24r\"",
-  "kind": "ObjectId",
-  "value": "234gferf24r",
-  "path": "_id",
-  "reason": {}
+  "error": "No target profile found with given id"
 }
 ```
 

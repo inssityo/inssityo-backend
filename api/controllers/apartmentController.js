@@ -16,8 +16,12 @@ exports.findApartment = (req, res) => {
     .findById(req.params.apartmentId)
     .populate("landLord")
     .exec(function (err, apartment) {
-      if (err) res.status(404).send(err);
-      res.json(apartment);
+      if (apartment) {
+        res.json(apartment);
+      } else {
+        err = { error: "No apartment found with given id" };
+        res.status(404).send(err);
+      }
     });
 };
 

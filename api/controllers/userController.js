@@ -18,8 +18,12 @@ exports.getUser = (req, res) => {
     .findById(req.params.userId)
     .populate("targetProfile")
     .exec(function (err, user) {
-      if (err) res.status(404).send(err);
-      res.json(user);
+      if (user) {
+        res.json(user);
+      } else {
+        err = { error: "No user found with given id" };
+        res.status(404).send(err);
+      }
     });
 };
 
