@@ -371,7 +371,7 @@ Gets single target profile object matching given targetprofileId. Populates `use
 
 ## SUCCESS RESPONSE
 
-**URL**: `localhost:3000/targetProfiles/location/?location=Honolulu,Reykjavik`
+**URL**: `/targetProfiles/location/?location=Honolulu,Reykjavik`
 
 **CODE** `200 OK`
 
@@ -509,7 +509,7 @@ Querying for a location that doesn't appear in any location fields in the target
 
 **URL**: `/targetProfiles/location/?location=Quebec`
 
-**CODE**: `404 NOT FOUND`
+**Code**: `404 NOT FOUND`
 
 **RESPONSE EXAMPLE**:
 

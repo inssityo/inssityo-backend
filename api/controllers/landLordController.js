@@ -28,15 +28,21 @@ exports.createLandLord = (req, res) => {
 
 //Finds landlord by id given in request params.
 exports.getLandlordById = (req, res) => {
-  landLord.findById(req.params.landLordId, (err, landLord) => {
-    if (err) res.status(404).send(err);
-    res.json(landLord);
-  });
+  landLord
+    .findById(req.params.landLordId)
+    .populate("apartments")
+    .exec(function (err, landlord) {
+      if (err) res.status(404).send(err);
+      res.json(landlord);
+    });
 };
 
 //Updates landlord with given request params with specified request body data.
 exports.updateLandLord = (req, res) => {
   let landlordToUpdate = req.body;
+  if (landlordToUpdate.img) {
+    landlordToUpdate.img = new Buffer.from(landlordToUpdate.img, "base64");
+  }
   landlordToUpdate.lastActive = new Date();
   landLord.findByIdAndUpdate(
     { _id: req.params.landLordId },

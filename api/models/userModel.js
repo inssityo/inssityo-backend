@@ -76,7 +76,7 @@ userSchema.pre("deleteOne", function (next) {
     });
 });
 
-// - - TESTAA - - Middleware to handle deletion of user reference in interestedUsers arrays of apartments upon user deletion.
+//Middleware to handle deletion of user reference in interestedUsers arrays of apartments upon user deletion.
 userSchema.pre("deleteOne", function (next) {
   var query = this;
   mongoose
@@ -86,6 +86,22 @@ userSchema.pre("deleteOne", function (next) {
       { $pull: { interestedUsers: query._conditions._id } },
       next
     );
+});
+
+//Middleware to handle deletion of user reference in blockedUsers arrays of other users upon user deletion.
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("user")
+    .updateMany({}, { $pull: { blockedUsers: query._conditions._id } }, next);
+});
+
+//Middleware to handle deletion of user reference in blockedUsers arrays of landlords upon user deletion.
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("landlord")
+    .updateMany({}, { $pull: { blockedUsers: query._conditions._id } }, next);
 });
 
 module.exports = mongoose.model("user", userSchema);

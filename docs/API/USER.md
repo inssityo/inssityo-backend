@@ -379,6 +379,157 @@ Gets single user object matching given userId.
     }
 ```
 
+## GET USERS BY LOCATION
+
+**URL**: `/users/location/?`
+
+**Method**: `GET`
+
+**QUERY CONSTRAINTS**: When querying multiple locations, separate each value with ','.
+
+## SUCCESS RESPONSE
+
+**URL**: `/users/location/?location=Jämsä`
+
+**CODE**: `200 OK`
+
+**RESPONSE EXAMPLE**:
+Response contains all users that have Jämsä in their `location` values
+
+```json
+[
+  {
+    "location": ["Jyväskylä", "Jämsä"],
+    "personalityTraits": ["social", "active", "happy"],
+    "blockedUsers": ["6001689afab9d01794cdae60"],
+    "_id": "6006e7377fe51546c8b654b2",
+    "email": "everything@internet.org",
+    "password": "allMostimportant",
+    "name": "Eva",
+    "surname": "Verything",
+    "img": "��.�(��*g",
+    "ageGroup": 3,
+    "gender": 2,
+    "rentLimit": 700,
+    "maxRoomMates": 2,
+    "employmentStatus": 1,
+    "workType": 1,
+    "description": "Kaiken kaikkiaan kunnollinen",
+    "alcohol": 1,
+    "smoking": 1,
+    "drugs": 1,
+    "sociality": 5,
+    "pets": true,
+    "petTypes": [
+      {
+        "dogs": true,
+        "cats": true,
+        "rodents": false,
+        "birds": false,
+        "fishes": false,
+        "terrarium": false,
+        "other": false,
+        "_id": "6006e7377fe51546c8b654b3"
+      }
+    ],
+    "hobbies": [
+      {
+        "_id": "6006e7377fe51546c8b654b4",
+        "collecting": 1,
+        "crafts": 3,
+        "informationTech": 5,
+        "sports": 4,
+        "music": 1,
+        "games": 5,
+        "reading": 2,
+        "art": 3,
+        "culture": 1,
+        "cooking": 4,
+        "travelling": 1,
+        "voluntaryWork": 1
+      }
+    ],
+    "lastActive": "2021-01-19T14:05:43.332Z",
+    "creationTime": "2021-01-19T14:05:43.332Z",
+    "__v": 0,
+    "targetProfile": "600833a61f4c32414087e773"
+  },
+  {
+    "location": ["Jyväskylä", "Jämsä"],
+    "personalityTraits": ["social", "active", "happy"],
+    "blockedUsers": ["6001689afab9d01794cdae60"],
+    "_id": "600fdff8a5d0ab3898073d03",
+    "email": "anything@internet.org",
+    "password": "allMostimportant",
+    "name": "Eva",
+    "surname": "Verything",
+    "movingDate": "1970-01-19T15:40:53.112Z",
+    "img": "��.�x",
+    "ageGroup": 3,
+    "gender": 2,
+    "rentLimit": 700,
+    "maxRoomMates": 2,
+    "employmentStatus": 1,
+    "workType": 1,
+    "description": "Kaiken kaikkiaan kunnollinen",
+    "alcohol": 1,
+    "smoking": 1,
+    "drugs": 1,
+    "sociality": 5,
+    "pets": true,
+    "petTypes": [
+      {
+        "dogs": true,
+        "cats": true,
+        "rodents": false,
+        "birds": false,
+        "fishes": false,
+        "terrarium": false,
+        "other": false,
+        "_id": "600fdff8a5d0ab3898073d04"
+      }
+    ],
+    "hobbies": [
+      {
+        "_id": "600fdff8a5d0ab3898073d05",
+        "collecting": 1,
+        "crafts": 3,
+        "informationTech": 5,
+        "sports": 4,
+        "music": 1,
+        "games": 5,
+        "reading": 2,
+        "art": 3,
+        "culture": 1,
+        "cooking": 4,
+        "travelling": 1,
+        "voluntaryWork": 1
+      }
+    ],
+    "lastActive": "2021-01-26T09:25:12.267Z",
+    "creationTime": "2021-01-26T09:25:12.267Z",
+    "__v": 0,
+    "targetProfile": "600fef59bd6cc80168cadfac"
+  }
+]
+```
+
+## ERROR RESPONSES
+
+Querying for a location that doesn't appear in any location fields in the users collection.
+
+**URL**: `users/location/?location=Singapore`
+
+**Code**: `404 NOT FOUND`
+
+**RESPONSE EXAMPLE**:
+
+```json
+{
+  "error": "No users found with Singapore as location values!"
+}
+```
+
 ## UPDATE EXISTING USER
 
 **URL**: `/users/:userId`

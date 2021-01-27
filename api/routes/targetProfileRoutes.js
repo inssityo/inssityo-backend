@@ -13,6 +13,7 @@ module.exports = (app) => {
     .get(targetProfileController.findTargetProfilesByLocation);
 
   app
+    //RUD
     .route("/targetProfiles/:targetProfileId")
     .get(targetProfileController.findTargetProfile)
     .put(targetProfileController.updateTargetProfile)
