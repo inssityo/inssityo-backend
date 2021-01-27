@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const landLordModel = require("../models/landLordModel");
 const landLord = mongoose.model("landLord");
+const bcrypt = require("bcrypt");
 
 //Gets all landlords from database
 exports.getAllLandLords = (req, res) => {
@@ -13,17 +13,24 @@ exports.getAllLandLords = (req, res) => {
 //Creates a new landlord user and saves it to database.
 exports.createLandLord = (req, res) => {
   const newLandlord = new landLord(req.body);
-  newLandlord.creationTime = new Date();
-  newLandlord.lastActive = new Date();
-  if (newLandlord.email) {
-    newLandlord.email = newLandlord.email.toLowerCase();
-  }
-  if (newLandlord.img !== null) {
-    newLandlord.img = new Buffer.from(newLandlord.img, "base64");
-  }
-  newLandlord.save((err, landLord) => {
-    if (err) res.status(403).send(err);
-    res.status(201).json(landLord);
+  //Hash password
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(newLandlord.password, salt, (err, hash) => {
+      if (err) throw err;
+      newLandlord.password = hash;
+      newLandlord.creationTime = new Date();
+      newLandlord.lastActive = new Date();
+      if (newLandlord.email) {
+        newLandlord.email = newLandlord.email.toLowerCase();
+      }
+      if (newLandlord.img !== null) {
+        newLandlord.img = new Buffer.from(newLandlord.img, "base64");
+      }
+      newLandlord.save((err, landLord) => {
+        if (err) res.status(403).send(err);
+        res.status(201).json(landLord);
+      });
+    });
   });
 };
 

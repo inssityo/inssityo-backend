@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const user = mongoose.model("user");
+const bcrypt = require("bcrypt");
 
 //Gets all users from database and populates targetProfile.
 exports.getAllUsers = (req, res) => {
@@ -57,10 +58,19 @@ exports.createUser = (req, res) => {
     // eslint-disable-next-line no-undef
     userDetails.img = new Buffer.from(req.body.img, "base64");
   }
+
   const newUser = new user(userDetails);
-  newUser.save((err, user) => {
-    if (err) res.status(403).send(err);
-    res.status(201).json(user);
+  //Hash password
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
+      if (err) throw err;
+
+      newUser.password = hash;
+      newUser.save((err, user) => {
+        if (err) res.status(403).send(err);
+        res.status(201).json(user);
+      });
+    });
   });
 };
 
