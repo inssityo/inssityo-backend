@@ -12,6 +12,7 @@ const userRoutes = require("./api/routes/userRoutes");
 const targetProfileRoutes = require("./api/routes/targetProfileRoutes");
 const apartmentRoutes = require("./api/routes/apartmentRoutes");
 const landLordRoutes = require("./api/routes/landLordRoutes");
+const accessRoutes = require("./api/routes/accessRoutes");
 
 mongoose.Promise = global.Promise;
 mongoose.set("useFindAndModify", false);
@@ -40,6 +41,7 @@ userRoutes(app);
 targetProfileRoutes(app);
 apartmentRoutes(app);
 landLordRoutes(app);
+accessRoutes(app);
 app.listen(port);
 
 app.use((req, res) => {
