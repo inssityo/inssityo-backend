@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 const landLord = mongoose.model("landLord");
 const user = mongoose.model("user");
 const helper = require("../../helpers");
+const jwt = require("jsonwebtoken");
+
+let refreshTokens = [];
 
 //Login function. Pass either 'user' or 'landlord' in request body 'type' parameter to get correct access.
 exports.login = async (req, res) => {
@@ -13,8 +16,19 @@ exports.login = async (req, res) => {
         foundUser.password
       );
       if (userLoginOk) {
-        //Handle auth here
-        res.status(200).json({ message: "LOGIN SUCCESS" });
+        const accessToken = jwt.sign(
+          { username: foundUser.email },
+          process.env.TOKEN_SECRET,
+          { expiresIn: "60m" }
+        );
+        const refreshToken = jwt.sign(
+          { username: foundUser.email },
+          process.env.REFRESH_SECRET
+        );
+
+        refreshTokens.push(refreshToken);
+
+        res.status(200).json({ accessToken, refreshToken });
       } else {
         res.status(403).json({ error: "Wrong username or password" });
       }
@@ -30,8 +44,19 @@ exports.login = async (req, res) => {
         foundLandlord.password
       );
       if (landlordLoginOk) {
-        //Handle auth here
-        res.status(200).json({ message: "LOGIN SUCCESS" });
+        const accessToken = jwt.sign(
+          { username: foundLandlord.email },
+          process.env.TOKEN_SECRET,
+          { expiresIn: "60m" }
+        );
+        const refreshToken = jwt.sign(
+          { username: foundLandlord.email },
+          process.env.REFRESH_SECRET
+        );
+
+        refreshTokens.push(refreshToken);
+
+        res.status(200).json({ accessToken, refreshToken });
       } else {
         res.status(403).json({ error: "Wrong username or password" });
       }
@@ -42,6 +67,34 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  console.log("logout");
-  res.status(200).send();
+  const token = req.body;
+  refreshTokens = refreshTokens.filter((t) => t !== token);
+  res.send("Logged out!");
+};
+
+exports.refreshSession = (req, res) => {
+  const { token } = req.body;
+  console.log(token);
+  if (!token) {
+    return res.status(401).json({ error: "refreshtoken not found" });
+  }
+
+  if (!refreshTokens.includes(token)) {
+    return res.status(403).send("token not incl");
+  }
+
+  jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
+    if (err) {
+      console.log("err");
+      return res.status(403).send(err);
+    }
+
+    const accessToken = jwt.sign(
+      { username: user.email },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "60m" }
+    );
+
+    res.json({ accessToken });
+  });
 };
