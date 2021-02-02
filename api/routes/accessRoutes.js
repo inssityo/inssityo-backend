@@ -4,4 +4,6 @@ module.exports = (app) => {
   app.route("/login").post(accessController.login);
 
   app.route("/logout").post(accessController.logout);
+
+  app.route("/token").post(accessController.refreshSession);
 };
