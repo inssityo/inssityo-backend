@@ -30,10 +30,10 @@ exports.login = async (req, res) => {
 
         res.status(200).json({ accessToken, refreshToken });
       } else {
-        res.status(403).json({ error: "Wrong username or password" });
+        res.status(401).json({ error: "Wrong username or password" });
       }
     } catch (error) {
-      res.status(403).json({ error: "Wrong username or password" });
+      res.status(401).json({ error: "Wrong username or password" });
     }
   }
   if (req.body.type === "landlord") {
@@ -58,34 +58,33 @@ exports.login = async (req, res) => {
 
         res.status(200).json({ accessToken, refreshToken });
       } else {
-        res.status(403).json({ error: "Wrong username or password" });
+        res.status(401).json({ error: "Wrong username or password" });
       }
     } catch (error) {
-      res.status(403).json({ error: "Wrong username or password" });
+      res.status(401).json({ error: "Wrong username or password" });
     }
   }
 };
 
 exports.logout = (req, res) => {
-  const token = req.body;
+  const token = req.body.refreshToken;
   refreshTokens = refreshTokens.filter((t) => t !== token);
-  res.send("Logged out!");
+
+  res.json({ message: "Logged out!" });
 };
 
 exports.refreshSession = (req, res) => {
-  const { token } = req.body;
-  console.log(token);
+  const token = req.body.refreshToken;
   if (!token) {
     return res.status(401).json({ error: "refreshtoken not found" });
   }
 
   if (!refreshTokens.includes(token)) {
-    return res.status(403).send("token not incl");
+    return res.status(403).json({ error: "bad refreshToken! Log in again!" });
   }
 
   jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
     if (err) {
-      console.log("err");
       return res.status(403).send(err);
     }
 

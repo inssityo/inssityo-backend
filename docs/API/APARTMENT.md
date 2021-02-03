@@ -10,6 +10,8 @@ New apartment can be created. It requires a parent `landlord` and some other fie
 
 **URL**: `/apartments`
 
+**Auth required** : YES
+
 **Method**: `POST`
 
 **Data constraints**:
@@ -88,7 +90,10 @@ Apartment with all possible fields:
   "interestedUsers": ["6001689afab9d01794cdae60"],
   "landLord": "60097e501a4f694584b3d87b",
   "description": "Tunnelmallinen loft-asunto Helsingin Ruskeasuolla. Mukava naapurusto ja lähialueen kattavat palvelut tekevät tästä todellisen kaupunkiasujan unelman!",
-  "floorPlan": "2h+k",
+  "floorPlan": [
+    { "type": "regular", "amount": 2 },
+    { "type": "kitchen", "amount": 1 }
+  ],
   "area": 58,
   "monthlyRent": 800,
   "guarantee": "Kahden kuukauden vuokra. Maksetaan muuton yhteydessä.",
@@ -289,6 +294,8 @@ Gets all apartments currently in the database.
 
 **URL**: `/apartments`
 
+**Auth required** : YES
+
 **METHOD**: `GET`
 
 ## Success response
@@ -399,6 +406,8 @@ Gets all apartments currently in the database.
 Gets single apartment object matching given apartmentId
 
 **URL**: `/apartments/:apartmentId`
+
+**Auth required** : YES
 
 **METHOD**: `GET`
 
@@ -549,6 +558,9 @@ Populated landLord for easy data access.
 
 Gets all apartments that belong to a given landlord.
 **URL**: `/landlordApts/:landlordId`
+
+**Auth required** : YES
+
 **Method**: `GET`
 
 ## Success response
@@ -772,6 +784,8 @@ Non-existing landlord given
 
 **URL**: `/apartments/location/?`
 
+**Auth required** : YES
+
 **Method**: `GET`
 
 ## Success response
@@ -992,6 +1006,8 @@ Currently, no apartments are listed with the location `Heinola`.
 
 **URL**: `/apartments/:apartmentId`
 
+**Auth required** : YES
+
 **Method**: `PUT`
 
 **Data example**\_
@@ -1111,3 +1127,25 @@ Changing apartment 600a9bc0713b7c3b5464f1e6's rent from 725 to 800.
 Deletes existing apartment (based on apartmentId) from database. For now, doesn't respond any different if there is no user corresponding the id specified.
 
 Deleting the apartment also deletes the reference of the apartment from the apartment landlord's apartments array. This process is done by using mongoose's 'pre' hook middleware. The deletion process is defined in the `apartmentModel.js` file.
+
+**URL**: `/apartments/:apartmentId`
+
+**Auth required** : YES
+
+**Method**: `DELETE`
+
+## Success Response
+
+Deleting an apartment.
+
+**URL**: `/apartments/6006e56798c464818a0bqcgt`
+
+**Content example** :
+Apartment is now removed from the database.
+
+```json
+{
+  "message": "target profile deleted!",
+  "_id": "6006e56798c464818a0bqcgt"
+}
+```

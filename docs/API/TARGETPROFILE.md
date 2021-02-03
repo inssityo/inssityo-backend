@@ -8,6 +8,8 @@ Target profiles require at least the preferred gender, ageGroup and location opt
 
 **URL**: `/targetprofile`
 
+**Auth required** : YES
+
 **Method**: `POST`
 
 **Data constraints**:
@@ -176,6 +178,8 @@ Gets all target profiles currently in the database. Populates `user` field.
 
 **URL** : `/targetProfiles`
 
+**Auth required** : YES
+
 **Method** : `GET`
 
 ## Success Response
@@ -253,6 +257,8 @@ Gets all target profiles currently in the database. Populates `user` field.
 Gets single target profile object matching given targetprofileId. Populates `user` field.
 
 **URL** : `/targetProfiles/:userId`
+
+**Auth required** : YES
 
 **Method** : `GET`
 
@@ -360,6 +366,8 @@ Gets single target profile object matching given targetprofileId. Populates `use
 ## GET TARGET PROFILES BY LOCATION
 
 **URL**: `/targetProfiles/location/?`
+
+**Auth required** : YES
 
 **Method**: `GET`
 
@@ -655,6 +663,8 @@ Deletes existing target profile (based on targetProfileId) from database. For no
 Deleting the the target profile also deletes the reference from the user document, if one exists. This process is done by using mongoose's 'pre' hook middleware. The deletion process is defined in the `targetProfileModel.js` file.
 
 **URL**: `/targetProfiles/:targetProfileId`
+
+**Auth required** : YES
 
 **Method**: `DELETE`
 

@@ -8,14 +8,18 @@ const apartmentSchema = new mongoose.Schema(
       ref: "landLord",
       required: true,
     },
+
+    //SERVERI LISÄÄ LUONNIN YHTEYDESSÄ
+    creationTime: { type: Date, required: true },
+    lastActive: { type: Date, required: true },
     //Kuvat
     // eslint-disable-next-line no-undef
     images: [{ data: Buffer, type: String }],
     //Vapaamuotoinen kuvaus
     description: { type: String, required: true },
     viewCount: { type: Number },
-    //Huoneet & tilat, esim 2H+kk, sauna
-    floorPlan: { type: String, required: true },
+    //Huoneet & tilat
+    floorPlan: [{ roomType: { type: String }, amount: { type: Number } }],
     //Asuinpinta-ala esim 66m^2
     area: { type: Number, required: true },
     //Yksittäisen soluhuoneen pinta-ala esim 12m^2

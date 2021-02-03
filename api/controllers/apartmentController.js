@@ -66,6 +66,9 @@ exports.createApartment = async (req, res) => {
     if (!owner) throw "Parent landlord not found or defined in request body";
 
     const newApartment = new apartment(req.body);
+    //TTL INDEX
+    newApartment.lastActive = new Date();
+    newApartment.creationTime = new Date();
     if (newApartment.images !== null) {
       let imgArr = newApartment.images;
       imgArr.forEach(
