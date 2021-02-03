@@ -56,6 +56,9 @@ exports.createTargetProfile = async (req, res) => {
     if (owner.targetProfile) throw "Parent user already has target profile";
 
     const newTargetProfile = new targetProfile(req.body);
+    //Add lastactive field to delete expired users.
+    newTargetProfile.lastActive = new Date();
+    newTargetProfile.creationTime = new Date();
     newTargetProfile.save((err, targetProfile) => {
       if (err) res.status(403).send(err);
       res.status(201).json(targetProfile);

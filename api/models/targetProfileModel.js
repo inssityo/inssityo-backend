@@ -6,6 +6,9 @@ const hobbiesSchema = require("../models/hobbiesSchema");
 //Mongoose model for preferred housemate profile. This will be compared to other User profiles to find matching housemates.
 const targetProfileSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+  //SERVERI LISÄÄ LUONNIN YHTEYDESSÄ
+  creationTime: { type: Date, required: true },
+  lastActive: { type: Date, required: true },
 
   //Vanhempi on isompi numero.
   ageGroup: { type: Number, min: 1, max: 8, required: true },

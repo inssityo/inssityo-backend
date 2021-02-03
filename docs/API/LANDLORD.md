@@ -8,6 +8,8 @@ New landlord can be created with only email and password information. Whenever a
 
 **URL**: `/landlords`
 
+**Auth required** : NO
+
 **Method**: `POST`
 
 **Data constraints**:
@@ -109,6 +111,8 @@ Gets all landlords currently in the database.
 
 **URL**: `/landlords`
 
+**Auth required** : YES
+
 **Method**: `GET`
 
 ## Success Response
@@ -138,6 +142,8 @@ Gets all landlords currently in the database.
 
 Gets single landlord object matching given landLordId.
 **URL**: `/landlords/:landLordId`
+
+**Auth required** : YES
 
 **Method**: `GET`
 
@@ -266,6 +272,8 @@ Changing Ossi's email to 'houses@landlord.com'
 Deletes existing landlord (based on landLordId) from database. For now, doesn't respond any different if there is no landlord corresponding the Id specified.
 
 **URL**: `/landlords/:landLordId`
+
+**Auth required** : YES
 
 **Method**: `DELETE`
 

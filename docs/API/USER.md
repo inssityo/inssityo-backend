@@ -8,6 +8,8 @@ New user can be created with only email and password information. Whenever an us
 
 **URL**: `/users`
 
+**Auth required** : NO
+
 **Method**: `POST`
 
 **Data constraints**:
@@ -250,6 +252,8 @@ Gets all users currently in the database.
 
 **URL** : `/users`
 
+**Auth required** : YES
+
 **Method** : `GET`
 
 ## Success response
@@ -305,7 +309,10 @@ Gets all users currently in the database.
 ## GET SINGLE USER
 
 Gets single user object matching given userId.
+
 **URL** : `/users/:userId`
+
+**Auth required** : YES
 
 **Method** : `GET`
 
@@ -379,6 +386,8 @@ Gets single user object matching given userId.
 ## GET USERS BY LOCATION
 
 **URL**: `/users/location/?`
+
+**Auth required** : YES
 
 **Method**: `GET`
 
@@ -531,6 +540,8 @@ Querying for a location that doesn't appear in any location fields in the users 
 
 **URL**: `/users/:userId`
 
+**Auth required** : YES
+
 **Method**: `PUT`
 
 **Data constraints**:
@@ -632,6 +643,8 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 
 **Condition** : Trying to update into an email address that's already taken.
 
+**Auth required** : YES
+
 **URL**: `/users/5ffed7f1d4d8da2c14dc3c4e`
 
 **Code**: `403 FORBIDDEN `
@@ -668,6 +681,8 @@ Deletes existing user (based on userId) from database. For now, doesn't respond 
 Deleting the user also deletes the referenced targetProfile document for the user, if one exists. This process is done by using mongoose's 'pre' hook middleware. The deletion process is defined in the `usermodel.js` file.
 
 **URL**: `/users/:userId`
+
+**Auth required** : YES
 
 **Method**: `DELETE`
 
