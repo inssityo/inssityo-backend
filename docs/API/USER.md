@@ -2,6 +2,87 @@
 
 The user model holds user data about them, their lifestyle and current situation. The data is used to connect people to make new roommates.
 
+The mongoose schema for user is as follows:
+
+```
+const userSchema = new mongoose.Schema({
+
+  email: { type: String, required: true, unique: true },
+
+  password: { type: String, required: true },
+
+  //Server adds dates on creation
+  creationTime: { type: Date, required: true },
+  lastActive: { type: Date, required: true },
+
+  //Information given while creating profile
+  name: { type: String },
+
+  surname: { type: String },
+
+  movingDate: { type: Date },
+
+  //Profile picture
+  img: { data: Buffer, type: String },
+
+  //Older is bigger
+  ageGroup: { type: Number, min: 1, max: 8 },
+
+  //1-male, 2-female, 3-other.
+  gender: { type: Number, min: 1, max: 3 },
+
+  //preferred living places
+  location: [{ type: String }],
+
+  rentLimit: { type: Number },
+
+  maxRoomMates: { type: Number },
+
+  //1-employed, 2-unemployed, 3-student, 4-retiree
+  employmentStatus: { type: Number, min: 1, max: 4 },
+
+  //1-day job, 2-shift work, 3-night job, 4-travel job - ask and show only if employmentStatus = 1
+  workType: { type: Number, min: 1, max: 4 },
+
+  description: { type: String },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  alcohol: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  smoking: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  drugs: { type: Number, min: 1, max: 4 },
+
+  //Max. 7
+  personalityTraits: {
+    type: [{ type: String }],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 7 personality traits"],
+  },
+
+  //1-Loner ... 5-Social
+  sociality: { type: Number, min: 1, max: 7 },
+
+  pets: { type: Boolean },
+
+  //show only if Pets = true
+  petTypes: [petTypesSchema],
+
+  hobbies: [hobbiesSchema],
+
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+
+  //The dream room mate for this user. Will be compared against other users"
+  targetProfile: {
+    max: 1,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "targetProfile",
+  },
+})
+
+```
+
 ## CREATE NEW USER
 
 New user can be created with only email and password information. Whenever an user completes their profile, it will be updated accordingly.

@@ -2,6 +2,36 @@
 
 Landlords are the owners of real-world apartments. The `landLord` model holds credentials, contact information and the listed apartments of the landlord.
 
+The mongoose schema for a landlord is as follows:
+
+```
+const landLordSchema = new mongoose.Schema(
+  {
+    email: { type: String, required: true, unique: true },
+
+    password: { type: String, required: true },
+
+    //Server adds these on creation.
+    creationTime: { type: Date, required: true },
+    lastActive: { type: Date, required: true },
+
+    //Profile creation data.
+    name: { type: String },
+    surname: { type: String },
+
+    //Profile picture
+    img: { data: Buffer, type: String },
+
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+
+    apartments: [{ type: mongoose.Schema.Types.ObjectId, ref: "apartment" }],
+  },
+
+  { collection: "landlords" }
+);
+
+```
+
 ## CREATE NEW LANDLORD
 
 New landlord can be created with only email and password information. Whenever a landlord further completes their profile, it will be updated accordingly.
