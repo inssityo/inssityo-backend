@@ -4,53 +4,50 @@ const hobbiesSchema = require("../models/hobbiesSchema");
 
 //User profile. Will contain data from users. Will be compared against targetProfiles of other users to find housemates that match.
 const userSchema = new mongoose.Schema({
-  //MINIMISSÄÄN TARVITTAVAT TIEDOT, AJANKOHDAT MÄÄRITTYVÄT KÄYTTÄJÄN TALLENTUESSA
   email: { type: String, required: true, unique: true },
-  //Pitäisi salata jotenkin.
   password: { type: String, required: true },
-  //SERVERI LISÄÄ LUONNIN YHTEYDESSÄ
+  //Server adds dates on creation
   creationTime: { type: Date, required: true },
   lastActive: { type: Date, required: true },
-
-  //SIVUSTOLLA PROFIILIA LUOTAESSA TÄYTETTÄVÄT TIEDOT
+  //Information given while creating profile
   name: { type: String },
   surname: { type: String },
   movingDate: { type: Date },
-  //Profiilikuva
+  //Profile picture
   // eslint-disable-next-line no-undef
   img: { data: Buffer, type: String },
-  //Vanhempi on isompi numero.
+  //Older is bigger
   ageGroup: { type: Number, min: 1, max: 8 },
-  //1-mies, 2-nainen, 3-muu.
+  //1-male, 2-female, 3-other.
   gender: { type: Number, min: 1, max: 3 },
-  //toiveasuinpaikka/-paikat
+  //preferred living places
   location: [{ type: String }],
   rentLimit: { type: Number },
   maxRoomMates: { type: Number },
-  //1-työssäkäyvä, 2-työtön, 3-opiskelija, 4-eläkeläinen
+  //1-employed, 2-unemployed, 3-student, 4-retiree
   employmentStatus: { type: Number, min: 1, max: 4 },
-  //1-päivätyö, 2-vuorotyö, 3-yötyö, 4-reissutyö - KYSY JA NÄYTÄ VAIN JOS employmentStatus = 1
+  //1-day job, 2-shift work, 3-night job, 4-travel job - ask and show only if employmentStatus = 1
   workType: { type: Number, min: 1, max: 4 },
   description: { type: String },
-  //1-en lainkaan, 2-silloin tällöin, 3-usein, 4-todella paljon
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
   alcohol: { type: Number, min: 1, max: 4 },
-  //1-en lainkaan, 2-silloin tällöin, 3-usein, 4-todella paljon
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
   smoking: { type: Number, min: 1, max: 4 },
-  //1-en lainkaan, 2-silloin tällöin, 3-usein, 4-todella paljon
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
   drugs: { type: Number, min: 1, max: 4 },
-  //Max. 7kpl, https://stackoverflow.com/questions/28514790/how-to-set-limit-for-array-size-in-mongoose-schema
+  //Max. 7, https://stackoverflow.com/questions/28514790/how-to-set-limit-for-array-size-in-mongoose-schema
   personalityTraits: {
     type: [{ type: String }],
     validate: [arrayLimit, "{PATH} exceeds the limit of 7 personality traits"],
   },
-  //1-Yksineläjä ... 5-laumaeläin
+  //1-Loner ... 5-Social
   sociality: { type: Number, min: 1, max: 7 },
   pets: { type: Boolean },
-  //Näytä vain jos Pets = true, https://stackoverflow.com/a/49940245{}
+  //show only if Pets = true, https://stackoverflow.com/a/49940245{}
   petTypes: [petTypesSchema],
   hobbies: [hobbiesSchema],
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
-  //KÄYTTÄJÄN "UNELMAKÄMPPIS JONKA POHJALTA ETSITÄÄN SOPIVIA KÄYTTÄJIÄ"
+  //The dream room mate for this user. Will be compared against other users"
   targetProfile: {
     max: 1,
     type: mongoose.Schema.Types.ObjectId,

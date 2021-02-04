@@ -4,16 +4,15 @@ const mongoose = require("mongoose");
 const landLordSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
-    //Pitäisi salata jotenkin.
     password: { type: String, required: true },
-    //Serveri lisää luonnin yhteydessä.
+    //Server adds these on creation.
     creationTime: { type: Date, required: true },
     lastActive: { type: Date, required: true },
 
-    //Sivustolla profiilia luotaessa täytettävät tiedot
+    //Profile creation data.
     name: { type: String },
     surname: { type: String },
-    //Profiilikuva
+    //Profile picture
     // eslint-disable-next-line no-undef
     img: { data: Buffer, type: String },
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
