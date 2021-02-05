@@ -72,9 +72,11 @@ exports.createTargetProfile = async (req, res) => {
 
 //Updates saved profile
 exports.updateTargetProfile = (req, res) => {
+  let targetProfileToUpdate = req.body;
+  targetProfileToUpdate.lastActive = new Date();
   targetProfile.findByIdAndUpdate(
     { _id: req.params.targetProfileId },
-    req.body,
+    targetProfileToUpdate,
     { new: true },
     (err, targetProfile) => {
       if (err) res.status(403).send(err);
