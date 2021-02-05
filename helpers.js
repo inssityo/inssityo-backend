@@ -1,5 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const Apartment = mongoose.model("apartment");
+const TargetProfile = mongoose.model("targetProfile");
+const User = mongoose.model("user");
+const Landlord = mongoose.model("landLord");
 
 //bcrypt hash checker
 exports.comparePassword = async (given, encrypted) => {
@@ -25,4 +30,25 @@ exports.authenticateJWT = (req, res, next) => {
   } else {
     res.status(401).send();
   }
+};
+
+//Updates all lastActive dates for a landlord and their apartments
+exports.UpdateAptDates = async (landlordId) => {
+  await Landlord.updateOne(
+    { _id: landlordId },
+    { $set: { lastActive: new Date() } }
+  );
+  await Apartment.updateMany(
+    { landLord: landlordId },
+    { $set: { lastActive: new Date() } }
+  );
+};
+
+//Updates all lastActive dates for an user and their targetprofile
+exports.UpdateTargetProfileDate = async (userId) => {
+  await User.updateOne({ _id: userId }, { $set: { lastActive: new Date() } });
+  await TargetProfile.updateOne(
+    { user: userId },
+    { $set: { lastActive: new Date() } }
+  );
 };

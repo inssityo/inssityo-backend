@@ -92,9 +92,11 @@ exports.createApartment = async (req, res) => {
 
 //Updates apartment data from request body
 exports.updateApartment = (req, res) => {
+  let apartmentToUpdate = req.body;
+  apartmentToUpdate.lastActive = new Date();
   apartment.findByIdAndUpdate(
     { _id: req.params.apartmentId },
-    req.body,
+    apartmentToUpdate,
     { new: true },
     (err, apartment) => {
       if (err) res.send(err);

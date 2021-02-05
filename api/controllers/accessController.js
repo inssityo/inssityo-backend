@@ -16,6 +16,8 @@ exports.login = async (req, res) => {
         foundUser.password
       );
       if (userLoginOk) {
+        //Update lastActive dates for user and their target profile.
+        helper.UpdateTargetProfileDate(foundUser._id);
         const accessToken = jwt.sign(
           { username: foundUser.email },
           process.env.TOKEN_SECRET,
@@ -44,6 +46,9 @@ exports.login = async (req, res) => {
         foundLandlord.password
       );
       if (landlordLoginOk) {
+        //Update lastActive dates for landlord and owned apartments
+        helper.UpdateAptDates(foundLandlord._id);
+
         const accessToken = jwt.sign(
           { username: foundLandlord.email },
           process.env.TOKEN_SECRET,
