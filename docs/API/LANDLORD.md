@@ -2,11 +2,43 @@
 
 Landlords are the owners of real-world apartments. The `landLord` model holds credentials, contact information and the listed apartments of the landlord.
 
+The mongoose schema for a landlord is as follows:
+
+```
+const landLordSchema = new mongoose.Schema(
+  {
+    email: { type: String, required: true, unique: true },
+
+    password: { type: String, required: true },
+
+    //Server adds these on creation.
+    creationTime: { type: Date, required: true },
+    lastActive: { type: Date, required: true },
+
+    //Profile creation data.
+    name: { type: String },
+    surname: { type: String },
+
+    //Profile picture
+    img: { data: Buffer, type: String },
+
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+
+    apartments: [{ type: mongoose.Schema.Types.ObjectId, ref: "apartment" }],
+  },
+
+  { collection: "landlords" }
+);
+
+```
+
 ## CREATE NEW LANDLORD
 
 New landlord can be created with only email and password information. Whenever a landlord further completes their profile, it will be updated accordingly.
 
 **URL**: `/landlords`
+
+**Auth required** : NO
 
 **Method**: `POST`
 
@@ -109,6 +141,8 @@ Gets all landlords currently in the database.
 
 **URL**: `/landlords`
 
+**Auth required** : YES
+
 **Method**: `GET`
 
 ## Success Response
@@ -138,6 +172,8 @@ Gets all landlords currently in the database.
 
 Gets single landlord object matching given landLordId.
 **URL**: `/landlords/:landLordId`
+
+**Auth required** : YES
 
 **Method**: `GET`
 
@@ -266,6 +302,8 @@ Changing Ossi's email to 'houses@landlord.com'
 Deletes existing landlord (based on landLordId) from database. For now, doesn't respond any different if there is no landlord corresponding the Id specified.
 
 **URL**: `/landlords/:landLordId`
+
+**Auth required** : YES
 
 **Method**: `DELETE`
 

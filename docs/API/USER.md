@@ -2,11 +2,94 @@
 
 The user model holds user data about them, their lifestyle and current situation. The data is used to connect people to make new roommates.
 
+The mongoose schema for user is as follows:
+
+```
+const userSchema = new mongoose.Schema({
+
+  email: { type: String, required: true, unique: true },
+
+  password: { type: String, required: true },
+
+  //Server adds dates on creation
+  creationTime: { type: Date, required: true },
+  lastActive: { type: Date, required: true },
+
+  //Information given while creating profile
+  name: { type: String },
+
+  surname: { type: String },
+
+  movingDate: { type: Date },
+
+  //Profile picture
+  img: { data: Buffer, type: String },
+
+  //Older is bigger
+  ageGroup: { type: Number, min: 1, max: 8 },
+
+  //1-male, 2-female, 3-other.
+  gender: { type: Number, min: 1, max: 3 },
+
+  //preferred living places
+  location: [{ type: String }],
+
+  rentLimit: { type: Number },
+
+  maxRoomMates: { type: Number },
+
+  //1-employed, 2-unemployed, 3-student, 4-retiree
+  employmentStatus: { type: Number, min: 1, max: 4 },
+
+  //1-day job, 2-shift work, 3-night job, 4-travel job - ask and show only if employmentStatus = 1
+  workType: { type: Number, min: 1, max: 4 },
+
+  description: { type: String },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  alcohol: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  smoking: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  drugs: { type: Number, min: 1, max: 4 },
+
+  //Max. 7
+  personalityTraits: {
+    type: [{ type: String }],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 7 personality traits"],
+  },
+
+  //1-Loner ... 5-Social
+  sociality: { type: Number, min: 1, max: 7 },
+
+  pets: { type: Boolean },
+
+  //show only if Pets = true
+  petTypes: [petTypesSchema],
+
+  hobbies: [hobbiesSchema],
+
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+
+  //The dream room mate for this user. Will be compared against other users"
+  targetProfile: {
+    max: 1,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "targetProfile",
+  },
+})
+
+```
+
 ## CREATE NEW USER
 
 New user can be created with only email and password information. Whenever an user completes their profile, it will be updated accordingly.
 
 **URL**: `/users`
+
+**Auth required** : NO
 
 **Method**: `POST`
 
@@ -250,6 +333,8 @@ Gets all users currently in the database.
 
 **URL** : `/users`
 
+**Auth required** : YES
+
 **Method** : `GET`
 
 ## Success response
@@ -305,7 +390,10 @@ Gets all users currently in the database.
 ## GET SINGLE USER
 
 Gets single user object matching given userId.
+
 **URL** : `/users/:userId`
+
+**Auth required** : YES
 
 **Method** : `GET`
 
@@ -379,6 +467,8 @@ Gets single user object matching given userId.
 ## GET USERS BY LOCATION
 
 **URL**: `/users/location/?`
+
+**Auth required** : YES
 
 **Method**: `GET`
 
@@ -531,6 +621,8 @@ Querying for a location that doesn't appear in any location fields in the users 
 
 **URL**: `/users/:userId`
 
+**Auth required** : YES
+
 **Method**: `PUT`
 
 **Data constraints**:
@@ -632,6 +724,8 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 
 **Condition** : Trying to update into an email address that's already taken.
 
+**Auth required** : YES
+
 **URL**: `/users/5ffed7f1d4d8da2c14dc3c4e`
 
 **Code**: `403 FORBIDDEN `
@@ -668,6 +762,8 @@ Deletes existing user (based on userId) from database. For now, doesn't respond 
 Deleting the user also deletes the referenced targetProfile document for the user, if one exists. This process is done by using mongoose's 'pre' hook middleware. The deletion process is defined in the `usermodel.js` file.
 
 **URL**: `/users/:userId`
+
+**Auth required** : YES
 
 **Method**: `DELETE`
 

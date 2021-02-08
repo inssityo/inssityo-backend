@@ -2,24 +2,80 @@ const mongoose = require("mongoose");
 
 const apartmentSchema = new mongoose.Schema(
   {
-    //Vuokranantajakäyttäjä
+    //Landlord user
     landLord: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "landLord",
       required: true,
     },
-    //Kuvat
+    //Server adds dates on creation
+    creationTime: { type: Date, required: true },
+    lastActive: { type: Date, required: true },
     // eslint-disable-next-line no-undef
     images: [{ data: Buffer, type: String }],
-    //Vapaamuotoinen kuvaus
+    //Sale or rent?
+    isForSale: { type: Boolean, required: true },
+    //name of housing association
+    housingAssociation: { type: String },
+    //text description
     description: { type: String, required: true },
+    isFurnished: { type: Boolean },
     viewCount: { type: Number },
-    //Huoneet & tilat, esim 2H+kk, sauna
-    floorPlan: { type: String, required: true },
-    //Asuinpinta-ala esim 66m^2
-    area: { type: Number, required: true },
-    //Yksittäisen soluhuoneen pinta-ala esim 12m^2
+    //Floor plan
+    floorPlan: {
+      regular: {
+        title: { type: String, default: "regular" },
+        amount: { type: Number },
+      },
+      kitchen: {
+        title: { type: String, default: "kitchen" },
+        amount: { type: Number },
+      },
+      kitchenette: {
+        title: { type: String, default: "kitchenette" },
+        amount: { type: Number },
+      },
+      diningRoom: {
+        title: { type: String, default: "diningRoom" },
+        amount: { type: Number },
+      },
+      bathRoom: {
+        title: { type: String, default: "bathRoom" },
+        amount: { type: Number },
+      },
+      toilet: {
+        title: { type: String, default: "toilet" },
+        amount: { type: Number },
+      },
+      sauna: {
+        title: { type: String, default: "sauna" },
+        amount: { type: Number },
+      },
+      wardrobe: {
+        title: { type: String, default: "wardrobe" },
+        amount: { type: Number },
+      },
+      utilityRoom: {
+        title: { type: String, default: "utility room" },
+        amount: { type: Number },
+      },
+      patio: {
+        title: { type: String, default: "patio" },
+        amount: { type: Number },
+      },
+      balcony: {
+        title: { type: String, default: "balcony" },
+        amount: { type: Number },
+      },
+    },
+    //Total area of the household
+    totalArea: { type: Number, required: true },
+    //liveable area in square meteres 66m^2
+    livingArea: { type: Number, required: true },
+    //Area of single cell room for ex. 12m^2
     cellArea: { type: Number },
+    //Area of possible included land property m^2
+    propertyArea: { type: Number },
     location: {
       //Helsinki
       city: { type: String, required: true },
@@ -30,27 +86,36 @@ const apartmentSchema = new mongoose.Schema(
       //44100
       areaCode: { type: String, required: true },
     },
-    //Kuukausivuokra
-    monthlyRent: { type: Number, required: true },
-    //Vuokravakuus, esim 2kk vuokra tai tietty summa. Myös mahd. sitoutumisvaatimus.
+    //Property has garage
+    hasGarage: { type: Boolean },
+    //Hot tub
+    hasHotTub: { type: Boolean },
+    //Swimming pool
+    hasPool: { type: Boolean },
+    //Monthly rent for rental apartments
+    monthlyRent: { type: Number },
+    //Monthly rent for possible land property
+    propertyRent: { type: Number },
+    //Sale price incl and excl debt.
+    price: { salePrice: { type: Number }, debtFreePrice: { type: Number } },
+    maintenanceCosts: { type: Number },
+    //Rent quarantee and possible commitment rules.
     guarantee: { type: String },
     buildYear: { type: Number },
-    //1-kerrostalo 2-rivitalo 3-paritalo 4-omakotitalo 5-ketjutalo 6-Luhtitalo 7-Puutalo-osake 8-muu?
+    //1-block of flats 2-terraced house 3-semi-detached house 4-detached house 5-chain house 6-Luhtitalo 7-wooden house share 8-other
     apartmentType: { type: Number, required: true },
-    //Onko soluasunto tai sen yksi huone?
+    //Property is a cell apartment room
     isCellApartment: { type: Boolean, required: true },
-    //Kerrosluku esim 2/4.
-    floor: { type: "String" },
+    //floor number for ex. 2/4
+    floor: { type: String },
     hasElevator: { type: Boolean },
-    //Muutettavissa alk. pvm.
     availableFrom: { type: Date, required: true },
-    //Sopimus voimassa. Kokeillaan laittaa timestamp arvolla 0 frontendissä klikkaamalla valinta "toistaiseksi".
+    //"For now" option given with timestamp value of 0 in front end.
     availableUntil: { type: Date, required: true },
-    //Vapaamuotoinen tekstikenttä asunnon varusteluista. Onko pyykkikonetta vai yhteinen pesutupa? Valmiiksi kalustettu vai ei?
+    //Text field about the utilities of the house and possible renovations of future and past
     equipment: { type: String },
-    //Jonkinlainen kuntoluokittelu.
+    //Condition evaluation
     condition: { type: Number },
-    // TEE TÄHÄN TERMS - OLIO, LISÄÄ KOTIVAKUUTUKSEN PAKOLLISUUS
     petsAllowed: { type: Boolean, required: true },
     smokingAllowed: { type: Boolean, required: true },
     utilities: {
@@ -69,21 +134,21 @@ const apartmentSchema = new mongoose.Schema(
         speed: { type: Number },
       },
     },
-    //Listaus lähimpiä palveluita. Ilmoitusmuoto {title:Nimike, esim bussipysäkki Kurkimäki, distance:Etäisyys metreinä, esim 400}
+    //Listing of nearest different services {title:Name, for example Kurkimäki bus stop, distance:distance in meters, for example 400}
     nearbyServices: {
-      // Julkinen liikenne: bussi- ja raitiopysäkit, juna- ja metroasemat, lentokenttä.
+      // Public transport: bus stops, railway stations, etc.
       publicTransport: [
         { title: { type: String }, distance: { type: Number } },
       ],
-      // Ruokakaupat
+      // Grocery stores
       groceries: [{ title: { type: String }, distance: { type: Number } }],
-      // Terveysasemat, sairaalat, hammashoitolat ym.
+      // Hospitals, dentists, etch
       healthCare: [{ title: { type: String }, distance: { type: Number } }],
-      //Päiväkodit
+      //Day cares
       dayCare: [{ title: { type: String }, distance: { type: Number } }],
-      //Koulut ja opistot
+      //Schools and institutions
       education: [{ title: { type: String }, distance: { type: Number } }],
-      //Merkittävimmät liikuntapaikat
+      //Notable excercise locations
       excercise: [{ title: { type: String }, distance: { type: Number } }],
     },
     interestedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],

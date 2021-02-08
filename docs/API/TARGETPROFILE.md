@@ -2,11 +2,71 @@
 
 Target profiles are arrays of properties representing the ideal room-/housemate for the users who make them. They are then compared to other users' profiles to find suitable roommates.
 
+The mongoose model for Target profile is as follows:
+
+```
+const targetProfileSchema = new mongoose.Schema({
+
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+
+  //Server adds these on creation.
+  creationTime: { type: Date, required: true },
+  lastActive: { type: Date, required: true },
+
+  //Bigger means older
+  ageGroup: { type: Number, min: 1, max: 8, required: true },
+
+  //1-male, 2-female, 3-other. multiple can be chosen.
+  gender: [{ type: Number, min: 1, max: 3, required: true }],
+
+  // Locations preferred to move into
+  location: [{ type: String, required: true }],
+
+  rentLimit: { type: Number },
+
+  maxRoomMates: { type: Number },
+
+  //1-employed, 2-unemployed, 3-student, 4-retiree
+  employmentStatus: { type: Number, min: 1, max: 4 },
+
+  //1-day job, 2-shift work, 3-night work, 4-travel work - ASK AND SHOW only if employmentStatus = 1
+  workType: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  alcohol: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  smoking: { type: Number, min: 1, max: 4 },
+
+  //1-not at all, 2-sometimes, 3-often, 4-a lot
+  drugs: { type: Number, min: 1, max: 4 },
+
+  //Max. 7
+  personalityTraits: {
+    type: [{ type: String }],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 7 personality traits"],
+  },
+
+  //1-Loner ... 5-Social
+  sociality: { type: Number, min: 1, max: 7 },
+
+  pets: { type: Boolean },
+
+  //Show only if Pets = true
+
+  petTypes: [petTypesSchema],
+
+  hobbies: [hobbiesSchema],
+})
+```
+
 ## CREATE NEW TARGET PROFILE
 
 Target profiles require at least the preferred gender, ageGroup and location options. A target profile must also always be connected to the user who created it.
 
 **URL**: `/targetprofile`
+
+**Auth required** : YES
 
 **Method**: `POST`
 
@@ -176,6 +236,8 @@ Gets all target profiles currently in the database. Populates `user` field.
 
 **URL** : `/targetProfiles`
 
+**Auth required** : YES
+
 **Method** : `GET`
 
 ## Success Response
@@ -253,6 +315,8 @@ Gets all target profiles currently in the database. Populates `user` field.
 Gets single target profile object matching given targetprofileId. Populates `user` field.
 
 **URL** : `/targetProfiles/:userId`
+
+**Auth required** : YES
 
 **Method** : `GET`
 
@@ -360,6 +424,8 @@ Gets single target profile object matching given targetprofileId. Populates `use
 ## GET TARGET PROFILES BY LOCATION
 
 **URL**: `/targetProfiles/location/?`
+
+**Auth required** : YES
 
 **Method**: `GET`
 
@@ -655,6 +721,8 @@ Deletes existing target profile (based on targetProfileId) from database. For no
 Deleting the the target profile also deletes the reference from the user document, if one exists. This process is done by using mongoose's 'pre' hook middleware. The deletion process is defined in the `targetProfileModel.js` file.
 
 **URL**: `/targetProfiles/:targetProfileId`
+
+**Auth required** : YES
 
 **Method**: `DELETE`
 
