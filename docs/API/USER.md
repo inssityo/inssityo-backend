@@ -1,6 +1,10 @@
 # USER
 
+The user model holds user data about them, their lifestyle and current situation. The data is used to connect people to make new roommates.
+
 ## CREATE NEW USER
+
+New user can be created with only email and password information. Whenever an user completes their profile, it will be updated accordingly.
 
 **URL**: `/users`
 
@@ -9,42 +13,83 @@
 **Data constraints**:
 
 Email must be unique to all other users in the database.
-Required fields: `email(String)` `password(String)` `name(String)` `surname(String)` `gender(Number min: 1, max: 3)` `ageGroup(Number min: 1, max: 8)` `location(String[])`
+Required fields: `email(String)`, `password(String)`
 
 **Data example**:
+User with all possible fields:
 
 ```json
 {
-  "email": "example@internet.com",
-  "password": "secret",
-  "name": "Edwin",
-  "surname": "Xample",
+  "location": ["Jyväskylä", "Jämsä"],
+  "personalityTraits": ["social", "active", "happy"],
+  "blockedUsers": ["6001689afab9d01794cdae60"],
+  "_id": "6006b7fccab9a41344bb8fc7",
+  "email": "everything@internet.org",
+  "password": "allMostimportant",
+  "name": "Eva",
+  "surname": "Verything",
+  "img": "\ufffd\ufffd.\ufffd(\ufffd\ufffd*g",
   "ageGroup": 3,
-  "gender": 1,
-  "location": ["Helsinki", "Espoo", "Vantaa"],
-  "rentLimit": 900,
-  "maxRoomMates": 3,
-  "employmentStatus": 3,
-  "description": "A perfect example to live with",
-  "alcohol": 2,
+  "gender": 2,
+  "rentLimit": 700,
+  "maxRoomMates": 2,
+  "employmentStatus": 1,
+  "workType": 1,
+  "description": "Kaiken kaikkiaan kunnollinen",
+  "alcohol": 1,
   "smoking": 1,
   "drugs": 1,
-  "personalityTraits": ["Harkitseva", "Sopeutuvainen", "Määrätietoinen"],
-  "sociality": 2,
-  "pets": false,
-  "hobbies": {
-    "collecting": 1,
-    "crafts": 3,
-    "informationTech": 5,
-    "sports": 4,
-    "music": 1,
-    "games": 5,
-    "reading": 2,
-    "art": 3,
-    "culture": 1,
-    "cooking": 4,
-    "travelling": 1,
-    "voluntaryWork": 1
+  "sociality": 5,
+  "pets": true,
+  "petTypes": [
+    {
+      "dogs": true,
+      "cats": true,
+      "rodents": false,
+      "birds": false,
+      "fishes": false,
+      "terrarium": false,
+      "other": false,
+      "_id": "6006b7fccab9a41344bb8fc8"
+    }
+  ],
+  "hobbies": [
+    {
+      "_id": "6006b7fccab9a41344bb8fc9",
+      "collecting": 1,
+      "crafts": 3,
+      "informationTech": 5,
+      "sports": 4,
+      "music": 1,
+      "games": 5,
+      "reading": 2,
+      "art": 3,
+      "culture": 1,
+      "cooking": 4,
+      "travelling": 1,
+      "voluntaryWork": 1
+    }
+  ],
+  "lastActive": "2021-01-19T10:44:12.312Z",
+  "creationTime": "2021-01-19T10:44:12.312Z",
+  "__v": 0,
+  "targetProfile": {
+    "location": ["Jyväskylä, Jämsä"],
+    "personalityTraits": ["Viileä"],
+    "_id": "6006b8b6cab9a41344bb8fca",
+    "user": "6006b7fccab9a41344bb8fc7",
+    "ageGroup": 3,
+    "gender": 1,
+    "rentLimit": 700,
+    "maxRoomMates": 2,
+    "employmentStatus": 1,
+    "workType": 1,
+    "alcohol": 2,
+    "smoking": 1,
+    "drugs": 1,
+    "petTypes": [],
+    "hobbies": [],
+    "__v": 0
   }
 }
 ```
@@ -56,6 +101,7 @@ Required fields: `email(String)` `password(String)` `name(String)` `surname(Stri
 **Code** : `201 CREATED`
 
 **Content example**:
+Response with user saved to server:
 
 ```json
 {
@@ -100,21 +146,32 @@ Required fields: `email(String)` `password(String)` `name(String)` `surname(Stri
 }
 ```
 
-## Error Responses
+## Error responses
 
-**Condition** : If given email is already related to a user in the Database.
+**Condition** : If given email is already related to a user in the Database. The email addresses given to the server are converted to lower case to avoid duplication with case mismatch.
 
 **Code** : `403 FORBIDDEN`
 
-**Content example** : `{ "driver": true, "name": "MongoError", "index": 0, "code": 11000, "keyPattern": { "email": 1 }, "keyValue": { "email": "example@internet.com" }}`
+**Response example**:
+
+```json
+{
+  "driver": true,
+  "name": "MongoError",
+  "index": 0,
+  "code": 11000,
+  "keyPattern": { "email": 1 },
+  "keyValue": { "email": "example@internet.com" }
+}
+```
 
 ### Or
 
-**Condition** : If fields are missing.
+**Condition** : If required fields are missing.
 
 **Code** : `403 FORBIDDEN`
 
-**Content example**
+**Response example**:
 Here, field `email` was intentionally left out.
 
 ```json
@@ -143,7 +200,7 @@ Here, field `email` was intentionally left out.
 
 **Code** : `403 FORBIDDEN`
 
-**Content example**:
+**Response example**:
 
 ```json
 {
@@ -195,10 +252,10 @@ Gets all users currently in the database.
 
 **Method** : `GET`
 
-## Success Response
+## Success response
 
 **Code** : `200 OK`
-**Content example** :
+**Response example** :
 
 ```json
 [
@@ -252,13 +309,13 @@ Gets single user object matching given userId.
 
 **Method** : `GET`
 
-## Success Response
+## Success response
 
 **URL** : `/users/5ffed7f1d4d8da2c14dc3c4e`
 
 **Code** : `200 OK`
 
-**Content example** :
+**Response example** :
 
 ```json
 {
@@ -303,7 +360,7 @@ Gets single user object matching given userId.
 }
 ```
 
-## Error Responses
+## Error responses
 
 **Condition** : If searched with non-existing userId.
 
@@ -311,15 +368,163 @@ Gets single user object matching given userId.
 
 **Code**: `404 NOT FOUND`
 
-**Content example**:
+**Response example**:
 
 ```json
-{    "stringValue": "\"4567456hrtg\"",
-    "kind": "ObjectId",
-    "value": "4567456hrtg",
-    "path": "_id",
-    "reason": {}}
-    }
+{
+  "error": "No user found with given id"
+}
+```
+
+## GET USERS BY LOCATION
+
+**URL**: `/users/location/?`
+
+**Method**: `GET`
+
+**QUERY CONSTRAINTS**: When querying multiple locations, separate each value with ','.
+
+## SUCCESS RESPONSE
+
+**URL**: `/users/location/?location=Jämsä`
+
+**CODE**: `200 OK`
+
+**RESPONSE EXAMPLE**:
+Response contains all users that have Jämsä in their `location` values
+
+```json
+[
+  {
+    "location": ["Jyväskylä", "Jämsä"],
+    "personalityTraits": ["social", "active", "happy"],
+    "blockedUsers": ["6001689afab9d01794cdae60"],
+    "_id": "6006e7377fe51546c8b654b2",
+    "email": "everything@internet.org",
+    "password": "allMostimportant",
+    "name": "Eva",
+    "surname": "Verything",
+    "img": "��.�(��*g",
+    "ageGroup": 3,
+    "gender": 2,
+    "rentLimit": 700,
+    "maxRoomMates": 2,
+    "employmentStatus": 1,
+    "workType": 1,
+    "description": "Kaiken kaikkiaan kunnollinen",
+    "alcohol": 1,
+    "smoking": 1,
+    "drugs": 1,
+    "sociality": 5,
+    "pets": true,
+    "petTypes": [
+      {
+        "dogs": true,
+        "cats": true,
+        "rodents": false,
+        "birds": false,
+        "fishes": false,
+        "terrarium": false,
+        "other": false,
+        "_id": "6006e7377fe51546c8b654b3"
+      }
+    ],
+    "hobbies": [
+      {
+        "_id": "6006e7377fe51546c8b654b4",
+        "collecting": 1,
+        "crafts": 3,
+        "informationTech": 5,
+        "sports": 4,
+        "music": 1,
+        "games": 5,
+        "reading": 2,
+        "art": 3,
+        "culture": 1,
+        "cooking": 4,
+        "travelling": 1,
+        "voluntaryWork": 1
+      }
+    ],
+    "lastActive": "2021-01-19T14:05:43.332Z",
+    "creationTime": "2021-01-19T14:05:43.332Z",
+    "__v": 0,
+    "targetProfile": "600833a61f4c32414087e773"
+  },
+  {
+    "location": ["Jyväskylä", "Jämsä"],
+    "personalityTraits": ["social", "active", "happy"],
+    "blockedUsers": ["6001689afab9d01794cdae60"],
+    "_id": "600fdff8a5d0ab3898073d03",
+    "email": "anything@internet.org",
+    "password": "allMostimportant",
+    "name": "Eva",
+    "surname": "Verything",
+    "movingDate": "1970-01-19T15:40:53.112Z",
+    "img": "��.�x",
+    "ageGroup": 3,
+    "gender": 2,
+    "rentLimit": 700,
+    "maxRoomMates": 2,
+    "employmentStatus": 1,
+    "workType": 1,
+    "description": "Kaiken kaikkiaan kunnollinen",
+    "alcohol": 1,
+    "smoking": 1,
+    "drugs": 1,
+    "sociality": 5,
+    "pets": true,
+    "petTypes": [
+      {
+        "dogs": true,
+        "cats": true,
+        "rodents": false,
+        "birds": false,
+        "fishes": false,
+        "terrarium": false,
+        "other": false,
+        "_id": "600fdff8a5d0ab3898073d04"
+      }
+    ],
+    "hobbies": [
+      {
+        "_id": "600fdff8a5d0ab3898073d05",
+        "collecting": 1,
+        "crafts": 3,
+        "informationTech": 5,
+        "sports": 4,
+        "music": 1,
+        "games": 5,
+        "reading": 2,
+        "art": 3,
+        "culture": 1,
+        "cooking": 4,
+        "travelling": 1,
+        "voluntaryWork": 1
+      }
+    ],
+    "lastActive": "2021-01-26T09:25:12.267Z",
+    "creationTime": "2021-01-26T09:25:12.267Z",
+    "__v": 0,
+    "targetProfile": "600fef59bd6cc80168cadfac"
+  }
+]
+```
+
+## ERROR RESPONSES
+
+Querying for a location that doesn't appear in any location fields in the users collection.
+
+**URL**: `users/location/?location=Singapore`
+
+**Code**: `404 NOT FOUND`
+
+**RESPONSE EXAMPLE**:
+
+```json
+{
+  "error": "No users found with Singapore as location values!"
+}
 ```
 
 ## UPDATE EXISTING USER
@@ -331,7 +536,7 @@ Gets single user object matching given userId.
 **Data constraints**:
 
 Email must be unique to all other users in the database.
-Required fields: `email(String)` `password(String)` `name(String)` `surname(String)` `gender(Number min: 1, max: 3)` `ageGroup(Number min: 1, max: 8)` `location(String[])`
+Required fields: `email(String)`, `password(String)`
 
 **Data example**:
 Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and Vantaa.
@@ -372,7 +577,7 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 }
 ```
 
-## Success Response
+## Success response
 
 **URL** : `/users/5ffed7f1d4d8da2c14dc3c4e`
 
@@ -425,13 +630,13 @@ Changing Edwin's preferred locations to only Helsinki from Helsinki, Espoo and V
 
 ## Error Responses
 
-**Condition** : Trying to update into a email address that's already taken.
+**Condition** : Trying to update into an email address that's already taken.
 
-**URL**: `localhost:3000/users/5ffed7f1d4d8da2c14dc3c4e`
+**URL**: `/users/5ffed7f1d4d8da2c14dc3c4e`
 
 **Code**: `403 FORBIDDEN `
 
-**Content example**:
+**Response example**:
 
 ```json
 {

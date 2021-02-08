@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   //Pitäisi salata jotenkin.
   password: { type: String, required: true },
+  //SERVERI LISÄÄ LUONNIN YHTEYDESSÄ
   creationTime: { type: Date, required: true },
   lastActive: { type: Date, required: true },
 
@@ -16,6 +17,7 @@ const userSchema = new mongoose.Schema({
   surname: { type: String },
   movingDate: { type: Date },
   //Profiilikuva
+  // eslint-disable-next-line no-undef
   img: { data: Buffer, type: String },
   //Vanhempi on isompi numero.
   ageGroup: { type: Number, min: 1, max: 8 },
@@ -72,6 +74,34 @@ userSchema.pre("deleteOne", function (next) {
         return next();
       }
     });
+});
+
+//Middleware to handle deletion of user reference in interestedUsers arrays of apartments upon user deletion.
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("apartment")
+    .updateMany(
+      {},
+      { $pull: { interestedUsers: query._conditions._id } },
+      next
+    );
+});
+
+//Middleware to handle deletion of user reference in blockedUsers arrays of other users upon user deletion.
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("user")
+    .updateMany({}, { $pull: { blockedUsers: query._conditions._id } }, next);
+});
+
+//Middleware to handle deletion of user reference in blockedUsers arrays of landlords upon user deletion.
+userSchema.pre("deleteOne", function (next) {
+  var query = this;
+  mongoose
+    .model("landLord")
+    .updateMany({}, { $pull: { blockedUsers: query._conditions._id } }, next);
 });
 
 module.exports = mongoose.model("user", userSchema);
