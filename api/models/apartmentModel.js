@@ -17,6 +17,12 @@ const apartmentSchema = new mongoose.Schema(
     isForSale: { type: Boolean, required: true },
     //name of housing association
     housingAssociation: { type: String },
+    buildingManager: { type: String },
+    //Upkeep by tenants or maintenance company?
+    maintainer: { type: String },
+    yard: { type: String },
+    allowedBuildArea: { type: Number },
+    zoning: { type: String },
     //text description
     description: { type: String, required: true },
     isFurnished: { type: Boolean },
@@ -59,15 +65,9 @@ const apartmentSchema = new mongoose.Schema(
         title: { type: String, default: "utility room" },
         amount: { type: Number },
       },
-      patio: {
-        title: { type: String, default: "patio" },
-        amount: { type: Number },
-      },
-      balcony: {
-        title: { type: String, default: "balcony" },
-        amount: { type: Number },
-      },
     },
+    balcony: { exists: { type: Boolean }, description: { type: String } },
+    patio: { exists: { type: Boolean }, description: { type: String } },
     //Total area of the household
     totalArea: { type: Number, required: true },
     //liveable area in square meteres 66m^2
@@ -95,10 +95,17 @@ const apartmentSchema = new mongoose.Schema(
     //Monthly rent for rental apartments
     monthlyRent: { type: Number },
     //Monthly rent for possible land property
-    propertyRent: { type: Number },
+    property: {
+      rented: { type: Boolean },
+      owner: { type: String },
+      propertyRent: { type: Number },
+      contractExpiresAt: { type: Date },
+    },
     //Sale price incl and excl debt.
     price: { salePrice: { type: Number }, debtFreePrice: { type: Number } },
-    maintenanceCosts: { type: Number },
+    // if the housing company is in debt, there may be associated financing costs.
+    maintenanceCosts: { upkeep: { type: Number }, financing: { type: Number } },
+    propertyTax: { type: Number },
     //Rent quarantee and possible commitment rules.
     guarantee: { type: String },
     buildYear: { type: Number },
@@ -108,23 +115,72 @@ const apartmentSchema = new mongoose.Schema(
     isCellApartment: { type: Boolean, required: true },
     //floor number for ex. 2/4
     floor: { type: String },
+    //Number of floors in property
+    propertyFloors: { type: String },
+    //views from the apartment windows.
+    sights: { type: String },
     hasElevator: { type: Boolean },
     availableFrom: { type: Date, required: true },
     //"For now" option given with timestamp value of 0 in front end.
     availableUntil: { type: Date, required: true },
-    //Text field about the utilities of the house and possible renovations of future and past
-    equipment: { type: String },
-    //Condition evaluation
+    //Text field about the equipment of the house. For example, ovens and washing machines can be included here.
+    equipment: {
+      //Kitchen, stove, machines etc.
+      kitchen: { type: String },
+      // # of sinks etc.
+      bathroom: { type: String },
+      //Wardrobes, cabinets
+      storage: { type: String },
+      //Oil, wood, electric, geothermic, and other information
+      heating: { type: String },
+      //Property sewage tanks or drain pipes
+      plumbing: { type: String },
+      //Well or local water
+      water: { type: String },
+      //garbage disposal
+      garbage: { type: String },
+      //Geothermic, electronic, free-flow
+      airConditioning: { type: String },
+      //Shared equipment, playgrounds, terraces etc.
+      common: { type: String },
+      //miscellaneous important information
+      other: { type: String },
+    },
+    //Information about detached buildings, forest and fields on the property.
+    propertyDescription: { type: String },
+    totalAmountOfAptsOnProperty: { type: Number },
+    businessesOnProperty: { type: String },
+    buildMaterial: { type: String },
+    roofType: { type: String },
+    //is the roof made from brick, metal or something else?
+    roofLining: { type: String },
+    //Information about past and possible upcoming renovations.
+    renovationDescription: { type: String },
+    //Energy efficiency class.
+    energyClass: { type: String },
+    //Condition evaluation.
     condition: { type: Number },
+    //Limitations set by housing company. Is smoking allowed? Is airbnb-style short term renting allowed?
+    limitations: { type: String },
     petsAllowed: { type: Boolean, required: true },
     smokingAllowed: { type: Boolean, required: true },
     utilities: {
+      utilityDescription: { type: String },
       insurancePlan: {
         mustHave: { type: Boolean },
         monthlyPrice: { type: Number },
       },
-      parkingIncluded: { type: Boolean },
-      water: { mustHave: { type: Boolean }, monthlyPrice: { type: Number } },
+      //Does the property include parking? types: 1-outdoor 2-open garage 3-closed garage 4-common parking garage
+      parking: {
+        exists: { type: Boolean },
+        description: { type: String },
+        supportsElectric: { type: Boolean },
+        type: { type: Number },
+      },
+      water: {
+        mustHave: { type: Boolean },
+        monthlyPrice: { type: Number },
+      },
       includesElectricity: {
         mustHave: { type: Boolean },
         monthlyPrice: { type: Number },
