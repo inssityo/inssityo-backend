@@ -23,7 +23,7 @@ exports.createLandLord = (req, res) => {
       if (newLandlord.email) {
         newLandlord.email = newLandlord.email.toLowerCase();
       }
-      if (newLandlord.img !== null) {
+      if (newLandlord.img) {
         newLandlord.img = new Buffer.from(newLandlord.img, "base64");
       }
       newLandlord.save((err, landLord) => {
