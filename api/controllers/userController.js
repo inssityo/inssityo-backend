@@ -54,7 +54,7 @@ exports.createUser = (req, res) => {
   if (userDetails.email) {
     userDetails.email = userDetails.email.toLowerCase();
   }
-  if (userDetails.img !== null) {
+  if (userDetails.img) {
     // eslint-disable-next-line no-undef
     userDetails.img = new Buffer.from(req.body.img, "base64");
   }
