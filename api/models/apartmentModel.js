@@ -82,7 +82,10 @@ const apartmentSchema = new mongoose.Schema(
       //Kontula
       neighborhood: { type: String },
       //Mannerheimintie 15 C 4
-      address: { type: String, required: true },
+      address: {
+        streetName: { type: String, required: true },
+        houseNumber: { type: String },
+      },
       //44100
       areaCode: { type: String, required: true },
     },
