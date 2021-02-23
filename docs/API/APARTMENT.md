@@ -198,7 +198,7 @@ Required fields: `description(String)` `isForSale(Boolean)` `floorPlan(String)` 
   "location": {
     "city": "Orimattila",
     "neighborhood": "Töhnö",
-    "address": "Töhnönraitti 5 A 1",
+    "address": { "streetName": "Töhnönraitti", "houseNumber": "5 A 1" },
     "areaCode": "16300"
   },
   "price": { "salePrice": 250000, "debtFreePrice": 250000 },
