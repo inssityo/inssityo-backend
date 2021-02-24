@@ -178,7 +178,7 @@ const apartmentSchema = new mongoose.Schema(
         exists: { type: Boolean },
         description: { type: String },
         supportsElectric: { type: Boolean },
-        type: { type: Number },
+        type: [{ type: Number }],
       },
       water: {
         mustHave: { type: Boolean },
