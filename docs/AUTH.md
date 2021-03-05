@@ -2,7 +2,7 @@
 
 ## LOGIN
 
-User or landlord sign in process. Returns an `accessToken` and a `refreshToken`
+User or landlord sign in process. Returns an `accessToken` and a `refreshToken` and found user's data entry.
 
 **URL** : `/login/`
 
@@ -25,7 +25,8 @@ User or landlord sign in process. Returns an `accessToken` and a `refreshToken`
 ```json
 {
   "username": "somebody@example.com",
-  "password": "pa5sW0rD"
+  "password": "pa5sW0rD",
+  "type": "landlord"
 }
 ```
 
@@ -38,7 +39,8 @@ User or landlord sign in process. Returns an `accessToken` and a `refreshToken`
 ```json
 {
   "accessToken": "93144b288eb1fdccbe46d6fc0f241a51766ecd3d",
-  "refreshToken": "93144b2wefowhugyoi32qiu2o2341a51766ecd3d"
+  "refreshToken": "93144b2wefowhugyoi32qiu2o2341a51766ecd3d",
+  "user" : {"user object"}
 }
 ```
 
