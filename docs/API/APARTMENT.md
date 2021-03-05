@@ -178,7 +178,7 @@ New apartment can be created. It requires a parent `landlord` and some other fie
 **Method**: `POST`
 
 **Data constraints**:
-Required fields: `description(String)` `isForSale(Boolean)` `floorPlan(String)` `totalArea(Number)` `livingArea(Number)` `area(Number)` `location{ city(string), neighborhood(string), address(string), areacode(string)}` `monthlyRent(Number)` `apartmentType(string)` `isCellApartment(boolean)` `availableFrom(date)` `availableUntil(date)` `petsAllowed(boolean)` `smokingAllowed(boolean)`
+Required fields: `description(String)` `isForSale(Boolean)` `floorPlan(String)` `totalArea(Number)` `livingArea(Number)` `area(Number)` `location{ city(string), neighborhood(string), address.streetName(string), areacode(string)}` `monthlyRent(Number)` `apartmentType(string)` `isCellApartment(boolean)` `availableFrom(date)` `availableUntil(date)` `petsAllowed(boolean)` `smokingAllowed(boolean)`
 
 **Data example**:
 

@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
 
         refreshTokens.push(refreshToken);
 
-        res.status(200).json({ accessToken, refreshToken });
+        res.status(200).json({ accessToken, refreshToken, user: foundUser });
       } else {
         res.status(401).json({ error: "Wrong username or password" });
       }
@@ -61,7 +61,9 @@ exports.login = async (req, res) => {
 
         refreshTokens.push(refreshToken);
 
-        res.status(200).json({ accessToken, refreshToken });
+        res
+          .status(200)
+          .json({ accessToken, refreshToken, user: foundLandlord });
       } else {
         res.status(401).json({ error: "Wrong username or password" });
       }
