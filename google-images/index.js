@@ -46,8 +46,9 @@ exports.getAccessToken = (oAuth2Client, callback) => {
       oAuth2Client.setCredentials(token);
       process.env.GOOGLE_TOKEN_RECEIVED = JSON.stringify(token);
       console.log("Token stored to", process.env.GOOGLE_TOKEN_RECEIVED);
+
+      callback(oAuth2Client);
     });
-    callback(oAuth2Client);
   });
 };
 
