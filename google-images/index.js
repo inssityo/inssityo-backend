@@ -1,5 +1,6 @@
 const readline = require("readline");
 const { google } = require("googleapis");
+const fs = require("fs");
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -46,10 +47,58 @@ exports.getAccessToken = (oAuth2Client, callback) => {
       oAuth2Client.setCredentials(token);
       process.env.GOOGLE_TOKEN_RECEIVED = JSON.stringify(token);
       console.log("Token stored to", process.env.GOOGLE_TOKEN_RECEIVED);
-
       callback(oAuth2Client);
     });
   });
+};
+
+exports.createFolder = (name) => {
+  var fileMetadata = {
+    name: name,
+    mimeType: "application/vnd.google-apps.folder",
+  };
+  drive.files.create(
+    {
+      resource: fileMetadata,
+      fields: "id",
+    },
+    function (err, file) {
+      if (err) {
+        // Handle error
+        console.error(err);
+      } else {
+        console.log("Folder Id: ", file.id);
+        return file.id;
+      }
+    }
+  );
+};
+
+exports.uploadToFolder = (folderId, photoName, photo) => {
+  var folderId = "0BwwA4oUTeiV1TGRPeTVjaWRDY1E";
+  var fileMetadata = {
+    name: photoName,
+    parents: [folderId],
+  };
+  var media = {
+    mimeType: "image/*",
+    body: fs.createReadStream(photo),
+  };
+  drive.files.create(
+    {
+      resource: fileMetadata,
+      media: media,
+      fields: "id",
+    },
+    function (err, file) {
+      if (err) {
+        // Handle error
+        console.error(err);
+      } else {
+        console.log("File Id: ", file.id);
+      }
+    }
+  );
 };
 
 /**

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const apartment = mongoose.model("apartment");
 const landLord = mongoose.model("landLord");
+const googleDriveService = require("../../google-images/index.js");
 
 //Gets ALL apartments from database
 exports.getApartments = (req, res) => {
@@ -71,8 +72,15 @@ exports.createApartment = async (req, res) => {
     newApartment.creationTime = new Date();
     if (newApartment.images !== null) {
       let imgArr = newApartment.images;
-      imgArr.forEach(
-        (element, index) => (imgArr[index] = new Buffer.from(element, "base64"))
+      const imgFolder = googleDriveService.createFolder(
+        `${owner._id} - ${newApartment.address.streetName} + ${newApartment.address.houseNumber}`
+      );
+      imgArr.forEach(item, (i) =>
+        googleDriveService.uploadToFolder(
+          imgFolder,
+          `apartmentPhoto-${i}`,
+          item
+        )
       );
       newApartment.images = imgArr;
     }
