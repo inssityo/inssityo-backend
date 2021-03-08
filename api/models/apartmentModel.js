@@ -12,7 +12,7 @@ const apartmentSchema = new mongoose.Schema(
     creationTime: { type: Date, required: true },
     lastActive: { type: Date, required: true },
     // eslint-disable-next-line no-undef
-    images: [{ data: Buffer, type: String }],
+    images: [{ data: Buffer }],
     //Sale or rent?
     isForSale: { type: Boolean, required: true },
     //name of housing association
