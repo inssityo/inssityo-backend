@@ -1,8 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const readline = require("readline");
-const { google } = require("googleapis");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 
@@ -60,4 +58,6 @@ app.use((req, res) => {
 
 console.log(`Server started on port ${port}`);
 
-googleDriveAccess.authorize(JSON.parse(content), googleDriveAccess.listFiles);
+googleDriveAccess.initializeGoogleAuth();
+
+//googleDriveAccess.authorize(JSON.parse(content), googleDriveAccess.listFiles);

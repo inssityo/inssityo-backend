@@ -70,19 +70,25 @@ exports.createApartment = async (req, res) => {
     //TTL INDEX
     newApartment.lastActive = new Date();
     newApartment.creationTime = new Date();
+
     if (newApartment.images !== null) {
-      let imgArr = newApartment.images;
-      const imgFolder = googleDriveService.createFolder(
-        `${owner._id} - ${newApartment.address.streetName} + ${newApartment.address.houseNumber}`
-      );
-      imgArr.forEach(item, (i) =>
-        googleDriveService.uploadToFolder(
+      let imgArr = req.body.images;
+      const folderTitle = `${owner._id} - ${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber}`;
+      const imgFolder = await googleDriveService.createFolder(folderTitle);
+      let imageNames = [];
+      console.log(imgArr);
+      imgArr.forEach(async (item, i) => {
+        console.log(item);
+        let photoName = `${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber} - photo-${i}`;
+        const imageName = await googleDriveService.uploadToFolder(
           imgFolder,
-          `apartmentPhoto-${i}`,
+          photoName,
           item
-        )
-      );
-      newApartment.images = imgArr;
+        );
+        imageNames.push(imageName);
+      });
+
+      newApartment.images = imageNames;
     }
     //initialize view counter
     newApartment.viewCount = 0;
