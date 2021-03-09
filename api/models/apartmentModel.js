@@ -125,7 +125,7 @@ const apartmentSchema = new mongoose.Schema(
     hasElevator: { type: Boolean },
     availableFrom: { type: Date, required: true },
     //"For now" option given with timestamp value of 0 in front end.
-    availableUntil: { type: Date, required: true },
+    availableUntil: { type: Date },
     //Text field about the equipment of the house. For example, ovens and washing machines can be included here.
     equipment: {
       //Kitchen, stove, machines etc.
@@ -178,7 +178,7 @@ const apartmentSchema = new mongoose.Schema(
         exists: { type: Boolean },
         description: { type: String },
         supportsElectric: { type: Boolean },
-        type: [{ type: Number }],
+        type: [],
       },
       water: {
         mustHave: { type: Boolean },
