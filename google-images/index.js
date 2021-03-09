@@ -2,6 +2,39 @@ const readline = require("readline");
 const { google } = require("googleapis");
 const fs = require("fs");
 
+exports.initializeGoogleAuth = () => {
+  const oAuth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_DRIVE_CLIENT_ID,
+    process.env.GOOGLE_DRIVE_CLIENT_SECRET,
+    process.env.GOOGLE_DRIVE_REDIRECT_URL
+  );
+
+  const url = oAuth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: process.env.GOOGLE_DRIVE_SCOPE,
+  });
+
+  console.log(url);
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  rl.question("Enter the code from that page here: ", (code) => {
+    rl.close();
+
+    oAuth2Client.getToken(decodeURIComponent(code), (err, token) => {
+      if (err) return console.error("Error retrieving access token", err);
+      oAuth2Client.setCredentials(token);
+      process.env.GOOGLE_TOKEN_RECEIVED = JSON.stringify(token);
+      console.log("Token stored to", process.env.GOOGLE_TOKEN_RECEIVED);
+
+      google.options({ auth: oAuth2Client });
+      console.log("google auth success");
+    });
+  });
+};
+
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
@@ -52,61 +85,55 @@ exports.getAccessToken = (oAuth2Client, callback) => {
   });
 };
 
-exports.createFolder = (name) => {
+exports.createFolder = async (name) => {
   var fileMetadata = {
     name: name,
     mimeType: "application/vnd.google-apps.folder",
+    parents: ["11YHNVJmAv7FRX2huo_9Q5JJy8u3BHJDM"],
   };
-  drive.files.create(
-    {
+  const drive = google.drive({ version: "v3" });
+  try {
+    const res = await drive.files.create({
       resource: fileMetadata,
       fields: "id",
-    },
-    function (err, file) {
-      if (err) {
-        // Handle error
-        console.error(err);
-      } else {
-        console.log("Folder Id: ", file.id);
-        return file.id;
-      }
-    }
-  );
+    });
+    return res.data.id;
+  } catch (err) {
+    return err;
+  }
 };
 
-exports.uploadToFolder = (folderId, photoName, photo) => {
-  var folderId = "0BwwA4oUTeiV1TGRPeTVjaWRDY1E";
-  var fileMetadata = {
-    name: photoName,
-    parents: [folderId],
-  };
-  var media = {
-    mimeType: "image/*",
-    body: fs.createReadStream(photo),
-  };
-  drive.files.create(
-    {
+exports.uploadToFolder = async (folderId, photoName, photo) => {
+  console.log(photo);
+  try {
+    var fileMetadata = {
+      name: photoName,
+      parents: [folderId],
+    };
+    var media = {
+      mimeType: "image/*",
+      body: fs.createReadStream(photo),
+    };
+    const drive = google.drive({ version: "v3" });
+
+    const res = await drive.files.create({
       resource: fileMetadata,
       media: media,
       fields: "id",
-    },
-    function (err, file) {
-      if (err) {
-        // Handle error
-        console.error(err);
-      } else {
-        console.log("File Id: ", file.id);
-      }
-    }
-  );
+    });
+    console.log("image addition success!");
+    return res;
+  } catch (err) {
+    console.log("ERROR", err);
+    return err;
+  }
 };
 
 /**
  * Lists the names and IDs of up to 10 files.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-exports.listFiles = (auth) => {
-  const drive = google.drive({ version: "v3", auth });
+exports.listFiles = () => {
+  const drive = google.drive({ version: "v3" });
   drive.files.list(
     {
       pageSize: 10,
