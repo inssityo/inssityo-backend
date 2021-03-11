@@ -29,12 +29,12 @@ const userSchema = new mongoose.Schema({
   //1-day job, 2-shift work, 3-night job, 4-travel job - ask and show only if employmentStatus = 1
   workType: { type: Number, min: 1, max: 4 },
   description: { type: String },
-  //1-not at all, 2-sometimes, 3-often, 4-a lot
-  alcohol: { type: Number, min: 1, max: 4 },
-  //1-not at all, 2-sometimes, 3-often, 4-a lot
-  smoking: { type: Number, min: 1, max: 4 },
-  //1-not at all, 2-sometimes, 3-often, 4-a lot
-  drugs: { type: Number, min: 1, max: 4 },
+  //1-not at all, 2-sometimes, 3-often
+  alcohol: { type: Number, min: 1, max: 3 },
+  //1-not at all, 2-sometimes, 3-often
+  smoking: { type: Number, min: 1, max: 3 },
+  //1-not at all, 2-sometimes, 3-often
+  drugs: { type: Number, min: 1, max: 3 },
   //Max. 7, https://stackoverflow.com/questions/28514790/how-to-set-limit-for-array-size-in-mongoose-schema
   personalityTraits: {
     type: [{ type: String }],
@@ -44,8 +44,8 @@ const userSchema = new mongoose.Schema({
   sociality: { type: Number, min: 1, max: 7 },
   pets: { type: Boolean },
   //show only if Pets = true, https://stackoverflow.com/a/49940245{}
-  petTypes: [petTypesSchema],
-  hobbies: [hobbiesSchema],
+  petTypes: petTypesSchema,
+  hobbies: hobbiesSchema,
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
   //The dream room mate for this user. Will be compared against other users"
   targetProfile: {
