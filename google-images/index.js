@@ -1,6 +1,15 @@
 const readline = require("readline");
 const { google } = require("googleapis");
 const fs = require("fs");
+const readable = require("stream").Readable;
+
+function bufferToStream(buffer) {
+  var stream = new readable();
+  stream.push(buffer);
+  stream.push(null);
+
+  return stream;
+}
 
 exports.initializeGoogleAuth = () => {
   const oAuth2Client = new google.auth.OAuth2(
@@ -111,8 +120,8 @@ exports.uploadToFolder = async (folderId, photoName, photo) => {
       parents: [folderId],
     };
     var media = {
-      mimeType: "image/*",
-      body: fs.createReadStream(photo),
+      mimeType: photo.mimetype,
+      body: bufferToStream(photo.buffer),
     };
     const drive = google.drive({ version: "v3" });
 
