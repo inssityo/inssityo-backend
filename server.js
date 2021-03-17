@@ -4,13 +4,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 
-// If modifying these scopes, ensure that TOKEN_RECEIVED in .env is not set
-const SCOPES = process.env.GOOGLE_DRIVE_SCOPE;
-
-// Load client secrets from a local file.
-const content = process.env.GOOGLE_DRIVE_JSON;
-// Authorize a client with credentials, then call the Google Drive API.
-
 global.User = require("./api/models/userModel");
 global.targetProfile = require("./api/models/targetProfileModel");
 global.apartment = require("./api/models/apartmentModel");
@@ -59,5 +52,3 @@ app.use((req, res) => {
 console.log(`Server started on port ${port}`);
 
 googleDriveAccess.initializeGoogleAuth();
-
-//googleDriveAccess.authorize(JSON.parse(content), googleDriveAccess.listFiles);

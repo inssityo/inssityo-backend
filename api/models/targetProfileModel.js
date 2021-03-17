@@ -16,7 +16,7 @@ const targetProfileSchema = new mongoose.Schema({
   gender: [{ type: Number, min: 1, max: 3, required: true }],
   // Locations preferred to move into
   location: [{ type: String, required: true }],
-  rentLimit: { type: Number },
+  rentLimit: { type: Number, required: true },
   maxRoomMates: { type: Number },
   //1-employed, 2-unemployed, 3-student, 4-retiree
   employmentStatus: { type: Number, min: 1, max: 4 },
