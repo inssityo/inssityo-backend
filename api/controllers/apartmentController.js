@@ -61,18 +61,25 @@ exports.findApartmentsByLocation = async (req, res) => {
 
 // Creates new apartment and saves it to the specified landlord's apartment array.
 exports.createApartment = async (req, res) => {
+  console.log(JSON.parse(req.body.mainData));
+  console.log(req.body);
+  console.log("DQWQDQD", req.body.landLord);
+
+  console.log("GLE0", req.files);
   try {
     const owner = await landLord.findById(req.body.landLord);
+    console.log(owner);
 
     if (!owner) throw "Parent landlord not found or defined in request body";
 
-    const newApartment = new apartment(req.body);
+    const newApartment = new apartment(JSON.parse(req.body.mainData));
+    console.log("NEWAPT CREATED");
     //TTL INDEX
     newApartment.lastActive = new Date();
     newApartment.creationTime = new Date();
 
-    if (newApartment.images !== null) {
-      let imgArr = req.body.images;
+    if (req.files !== null) {
+      let imgArr = req.files;
       const folderTitle = `${owner._id} - ${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber}`;
       const imgFolder = await googleDriveService.createFolder(folderTitle);
       let imageNames = [];
