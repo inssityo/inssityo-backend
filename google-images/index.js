@@ -162,3 +162,25 @@ exports.listFiles = () => {
     }
   );
 };
+
+exports.getFileUrl = (fileId) => {
+  console.log("GETFILEURL", fileId);
+  const drive = google.drive({ version: "v3" });
+  drive.files.get(
+    { fileId: fileId, alt: "media" },
+    { responseType: "stream" },
+    (err, { data }) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      let buf = [];
+      data.on("data", (e) => buf.push(e));
+      data.on("end", () => {
+        const buffer = Buffer.concat(buf);
+        console.log(buffer);
+        return buffer;
+      });
+    }
+  );
+};
