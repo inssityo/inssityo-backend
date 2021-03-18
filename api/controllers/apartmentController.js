@@ -3,6 +3,14 @@ const apartment = mongoose.model("apartment");
 const landLord = mongoose.model("landLord");
 const googleDriveService = require("../../google-images/index.js");
 
+async function generateImgURL(imgID) {
+  console.log("genrating", imgID);
+  console.log("generating img url for", imgID);
+  let imgDataUrl = await googleDriveService.getFileUrl(imgID);
+  console.log("DATAURL", imgDataUrl);
+  return imgDataUrl;
+}
+
 //Gets ALL apartments from database
 exports.getApartments = (req, res) => {
   apartment.find({}, (err, apartments) => {
@@ -63,27 +71,23 @@ exports.findApartmentsByLocation = async (req, res) => {
 exports.createApartment = async (req, res) => {
   console.log(JSON.parse(req.body.mainData));
   console.log(req.body);
-  console.log("DQWQDQD", req.body.landLord);
 
   console.log("GLE0", req.files);
   try {
     const owner = await landLord.findById(req.body.landLord);
-    console.log(owner);
 
     if (!owner) throw "Parent landlord not found or defined in request body";
 
     const newApartment = new apartment(JSON.parse(req.body.mainData));
-    console.log("NEWAPT CREATED");
+    newApartment.images = [];
     //TTL INDEX
     newApartment.lastActive = new Date();
     newApartment.creationTime = new Date();
-
     if (req.files !== null) {
       let imgArr = req.files;
-      const folderTitle = `${owner._id} - ${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber}`;
+      const folderTitle = `${newApartment.location.city} - ${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber} - ${owner._id}`;
       const imgFolder = await googleDriveService.createFolder(folderTitle);
-      let imageNames = [];
-      console.log(imgArr);
+
       imgArr.forEach(async (item, i) => {
         console.log(item);
         let photoName = `${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber} - photo-${i}`;
@@ -92,10 +96,11 @@ exports.createApartment = async (req, res) => {
           photoName,
           item
         );
-        imageNames.push(imageName);
+        newApartment.images.push(imageName.data.id);
+        console.log(imageName.data.id);
       });
 
-      newApartment.images = imageNames;
+      console.log("NewaptIMGS", newApartment.images);
     }
     //initialize view counter
     newApartment.viewCount = 0;
