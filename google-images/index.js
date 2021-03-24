@@ -1,6 +1,5 @@
 const readline = require("readline");
 const { google } = require("googleapis");
-const fs = require("fs");
 const readable = require("stream").Readable;
 
 function bufferToStream(buffer) {
@@ -164,23 +163,24 @@ exports.listFiles = () => {
 };
 
 exports.getFileUrl = (fileId) => {
-  console.log("GETFILEURL", fileId);
-  const drive = google.drive({ version: "v3" });
-  drive.files.get(
-    { fileId: fileId, alt: "media" },
-    { responseType: "stream" },
-    (err, { data }) => {
-      if (err) {
-        console.log(err);
-        return;
+  return new Promise((resolve, reject) => {
+    console.log("GETFILEURL", fileId);
+    const drive = google.drive({ version: "v3" });
+    drive.files.get(
+      { fileId: fileId, alt: "media", supportsAllDrives: true },
+      { responseType: "stream" },
+      (err, { data }) => {
+        if (err) {
+          return reject("REJECT", err);
+        }
+        let buf = [];
+        data.on("data", (e) => buf.push(e));
+        data.on("end", () => {
+          const buffer = Buffer.concat(buf);
+          let json = JSON.stringify(buffer);
+          resolve(json);
+        });
       }
-      let buf = [];
-      data.on("data", (e) => buf.push(e));
-      data.on("end", () => {
-        const buffer = Buffer.concat(buf);
-        console.log(buffer);
-        return buffer;
-      });
-    }
-  );
+    );
+  });
 };
