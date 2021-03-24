@@ -4,7 +4,6 @@ const landLord = mongoose.model("landLord");
 const googleDriveService = require("../../google-images/index.js");
 
 async function generateImgURL(imgID) {
-  console.log("genrating", imgID);
   console.log("generating img url for", imgID);
   let imgDataUrl = await googleDriveService.getFileUrl(imgID);
   console.log("DATAURL", imgDataUrl);
@@ -12,10 +11,21 @@ async function generateImgURL(imgID) {
 }
 
 //Gets ALL apartments from database
-exports.getApartments = (req, res) => {
+exports.getApartments = async (req, res) => {
   apartment.find({}, (err, apartments) => {
     if (err) res.status(404).send(err);
-    res.json(apartments);
+    let aptDocs = JSON.parse(JSON.stringify(apartments));
+    aptDocs.forEach((apt) => {
+      let aptImgBuffers = [];
+      if (apt.images) {
+        for (const img of apt.images) {
+          const imgUrl = generateImgURL(img);
+          aptImgBuffers.push(imgUrl);
+        }
+        apt.images = aptImgBuffers;
+      }
+    });
+    res.json(aptDocs);
   });
 };
 
@@ -69,10 +79,10 @@ exports.findApartmentsByLocation = async (req, res) => {
 
 // Creates new apartment and saves it to the specified landlord's apartment array.
 exports.createApartment = async (req, res) => {
-  console.log(JSON.parse(req.body.mainData));
+  console.log("MAIN DATA: ", JSON.parse(req.body.mainData));
   console.log(req.body);
 
-  console.log("GLE0", req.files);
+  console.log("ADDITIONAL FILES: ", req.files);
   try {
     const owner = await landLord.findById(req.body.landLord);
 
@@ -87,10 +97,12 @@ exports.createApartment = async (req, res) => {
       let imgArr = req.files;
       const folderTitle = `${newApartment.location.city} - ${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber} - ${owner._id}`;
       const imgFolder = await googleDriveService.createFolder(folderTitle);
-
-      imgArr.forEach(async (item, i) => {
-        console.log(item);
-        let photoName = `${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber} - photo-${i}`;
+      for (const [i, item] of imgArr.entries()) {
+        console.log("ITEM", item);
+        console.log("I", i);
+        let photoName = `${newApartment.location.address.streetName} - ${
+          newApartment.location.address.houseNumber
+        } - photo-${i + 1}`;
         const imageName = await googleDriveService.uploadToFolder(
           imgFolder,
           photoName,
@@ -98,7 +110,7 @@ exports.createApartment = async (req, res) => {
         );
         newApartment.images.push(imageName.data.id);
         console.log(imageName.data.id);
-      });
+      }
 
       console.log("NewaptIMGS", newApartment.images);
     }
