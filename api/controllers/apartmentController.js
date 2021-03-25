@@ -2,13 +2,7 @@ const mongoose = require("mongoose");
 const apartment = mongoose.model("apartment");
 const landLord = mongoose.model("landLord");
 const googleDriveService = require("../../google-images/index.js");
-
-async function generateImgURL(imgID) {
-  console.log("generating img url for", imgID);
-  let imgDataUrl = await googleDriveService.getFileUrl(imgID);
-  console.log("DATAURL", imgDataUrl);
-  return imgDataUrl;
-}
+const helper = require("../../helpers.js");
 
 //Gets ALL apartments from database
 exports.getApartments = async (req, res) => {
@@ -16,13 +10,8 @@ exports.getApartments = async (req, res) => {
     if (err) res.status(404).send(err);
     let aptDocs = JSON.parse(JSON.stringify(apartments));
     aptDocs.forEach((apt) => {
-      let aptImgBuffers = [];
       if (apt.images) {
-        for (const img of apt.images) {
-          const imgUrl = generateImgURL(img);
-          aptImgBuffers.push(imgUrl);
-        }
-        apt.images = aptImgBuffers;
+        apt.imageDisplayUrls = helper.createImgURLS(apt.images);
       }
     });
     res.json(aptDocs);
@@ -36,7 +25,11 @@ exports.findApartment = (req, res) => {
     .populate("landLord")
     .exec(function (err, apartment) {
       if (apartment) {
-        res.json(apartment);
+        let aptDoc = JSON.parse(JSON.stringify(apartment));
+        if (aptDoc.images) {
+          aptDoc.imageDisplayUrls = helper.createImgURLS(aptDoc.images);
+          res.json(aptDoc);
+        }
       } else {
         err = { error: "No apartment found with given id" };
         res.status(404).send(err);
@@ -57,7 +50,13 @@ exports.findLandlordApts = async (req, res) => {
   } catch (err) {
     return res.status(404).send(err);
   }
-  res.json(result);
+  let resultDocs = JSON.parse(JSON.stringify(result));
+  resultDocs.forEach((doc) => {
+    if (doc.images) {
+      doc.imageDisplayUrls = helper.createImgURLS;
+    }
+  });
+  res.json(resultDocs);
 };
 
 //Find apartments by their location value.
@@ -74,7 +73,13 @@ exports.findApartmentsByLocation = async (req, res) => {
   } catch (err) {
     return res.status(404).send(err);
   }
-  res.json(result);
+  let resultDocs = JSON.parse(JSON.stringify(result));
+  resultDocs.forEach((doc) => {
+    if (doc.images) {
+      doc.imageDisplayUrls = helper.createImgURLS;
+    }
+  });
+  res.json(resultDocs);
 };
 
 // Creates new apartment and saves it to the specified landlord's apartment array.
