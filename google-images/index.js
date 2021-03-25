@@ -162,6 +162,7 @@ exports.listFiles = () => {
   );
 };
 
+/** 
 exports.getFileUrl = (fileId) => {
   return new Promise((resolve, reject) => {
     console.log("GETFILEURL", fileId);
@@ -177,10 +178,19 @@ exports.getFileUrl = (fileId) => {
         data.on("data", (e) => buf.push(e));
         data.on("end", () => {
           const buffer = Buffer.concat(buf);
-          let json = JSON.stringify(buffer);
-          resolve(json);
+          resolve(buffer);
         });
       }
     );
+  });
+};
+*/
+
+exports.getFileContentLink = (fileId) => {
+  const drive = google.drive({ version: "v3" });
+  drive.files.get({ fileId: fileId, fields: "*" }, (err, res) => {
+    if (err) return "GET IMAGE ERR ", err;
+    console.log(res.data.webContentLink);
+    return res.data.webContentLink;
   });
 };

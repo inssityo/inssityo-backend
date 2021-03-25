@@ -12,6 +12,15 @@ exports.comparePassword = async (given, encrypted) => {
   return result;
 };
 
+exports.createImgURLS = (imgArr) => {
+  let imageDisplayUrls = [];
+  for (const img of imgArr) {
+    let imgUrl = `https://drive.google.com/uc?id=${img}&amp;export=download`;
+    imageDisplayUrls.push(imgUrl);
+  }
+  return imageDisplayUrls;
+};
+
 //JWT Authentication middleware
 exports.authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
