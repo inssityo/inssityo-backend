@@ -150,10 +150,15 @@ exports.updateApartment = (req, res) => {
 
 //Deletes apartment. Pre delete hook for landlord ref deletion in apartmentModel.js
 exports.deleteApartment = async (req, res) => {
+  const foundApt = await apartment.findOne({ _id: req.params.apartmentId });
+
   await apartment.deleteOne({ _id: req.params.apartmentId }, (err) => {
     if (err) {
       res.send(err);
     } else {
+      if (foundApt.images) {
+        googleDriveService.deleteParentFolder(foundApt.images[0]);
+      }
       res.json({ message: "apartment deleted", _id: req.params.apartmentId });
     }
   });
