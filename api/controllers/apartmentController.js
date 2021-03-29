@@ -101,7 +101,10 @@ exports.createApartment = async (req, res) => {
     if (req.files !== null) {
       let imgArr = req.files;
       const folderTitle = `${newApartment.location.city} - ${newApartment.location.address.streetName} - ${newApartment.location.address.houseNumber} - ${owner._id}`;
-      const imgFolder = await googleDriveService.createFolder(folderTitle);
+      const imgFolder = await googleDriveService.createFolder(
+        folderTitle,
+        process.env.GOOGLE_APARTMENT_PARENT
+      );
       for (const [i, item] of imgArr.entries()) {
         console.log("ITEM", item);
         console.log("I", i);

@@ -220,13 +220,6 @@ const apartmentSchema = new mongoose.Schema(
 apartmentSchema.pre("deleteOne", function (next) {
   let query = this;
 
-  const foundApt = mongoose
-    .model("apartment")
-    .findOne({ id: query._conditions._id });
-  if (foundApt.images) {
-    googleDriveService.deleteParentFolder(foundApt.images[0]);
-  }
-
   mongoose
     .model("landLord")
     .updateOne({}, { $pull: { apartments: query._conditions._id } }, next);
