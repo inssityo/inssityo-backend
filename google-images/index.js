@@ -1,6 +1,7 @@
 const readline = require("readline");
 const { google } = require("googleapis");
 const readable = require("stream").Readable;
+const { file } = require("googleapis/build/src/apis/file");
 
 function bufferToStream(buffer) {
   var stream = new readable();
@@ -186,11 +187,35 @@ exports.getFileUrl = (fileId) => {
 };
 */
 
+//Get webContentLink for Img src use.
 exports.getFileContentLink = (fileId) => {
   const drive = google.drive({ version: "v3" });
   drive.files.get({ fileId: fileId, fields: "*" }, (err, res) => {
     if (err) return "GET IMAGE ERR ", err;
     console.log(res.data.webContentLink);
     return res.data.webContentLink;
+  });
+};
+
+//Delete file
+exports.deleteFile = (fileId) => {
+  const drive = google.drive({ version: "v3" });
+  drive.files.delete({ fileId: fileId }, (err, res) => {
+    if (err) return "DELETE ERR", err;
+    return res;
+  });
+};
+
+//Delete folder of given file and all files in it
+exports.deleteParentFolder = (fileId) => {
+  console.log("deleting all images");
+  const drive = google.drive({ version: "v3" });
+  drive.files.get({ fileId: fileId, fields: "parents" }, (err, res) => {
+    if (err) return "ERROR FINDING PARENT", err;
+    console.log(res.data);
+    drive.files.delete({ fileId: res.data.parents }, (err, res) => {
+      if (err) return "ERROR DELETING PARENT", err;
+      console.log("PARENT DELETION SUCCESSFUL", res);
+    });
   });
 };
