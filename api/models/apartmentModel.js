@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const googleDriveService = require("../../google-images/index.js");
 
 const apartmentSchema = new mongoose.Schema(
   {
@@ -218,6 +219,14 @@ const apartmentSchema = new mongoose.Schema(
 //Middleware to handle deletion of apartment ref from landlord upon apartment deletion
 apartmentSchema.pre("deleteOne", function (next) {
   let query = this;
+
+  const foundApt = mongoose
+    .model("apartment")
+    .findOne({ id: query._conditions._id });
+  if (foundApt.images) {
+    googleDriveService.deleteParentFolder(foundApt.images[0]);
+  }
+
   mongoose
     .model("landLord")
     .updateOne({}, { $pull: { apartments: query._conditions._id } }, next);
