@@ -14,7 +14,7 @@ const landLordSchema = new mongoose.Schema(
     surname: { type: String },
     //Profile picture
     // eslint-disable-next-line no-undef
-    img: { data: Buffer, type: String },
+    img: { type: String },
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     apartments: [{ type: mongoose.Schema.Types.ObjectId, ref: "apartment" }],
   },
