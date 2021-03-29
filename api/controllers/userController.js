@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const user = mongoose.model("user");
 const bcrypt = require("bcrypt");
+const googleDriveService = require("../../google-images/index.js");
 
 //Gets all users from database and populates targetProfile.
 exports.getAllUsers = (req, res) => {
@@ -46,17 +47,20 @@ exports.findUsersByLocation = async (req, res) => {
 };
 
 //Creates new user object and saves to database.
-exports.createUser = (req, res) => {
+exports.createUser = async (req, res) => {
   const userDetails = req.body;
   //Add lastactive field to delete expired users.
   userDetails.lastActive = new Date();
   userDetails.creationTime = new Date();
-  if (userDetails.email) {
-    userDetails.email = userDetails.email.toLowerCase();
-  }
+  userDetails.email = userDetails.email.toLowerCase();
+
   if (userDetails.img) {
-    // eslint-disable-next-line no-undef
-    userDetails.img = new Buffer.from(req.body.img, "base64");
+    const imageName = await googleDriveService.uploadToFolder(
+      process.env.GOOGLE_USER_PARENT,
+      `${userDetails.email} - userPhoto`,
+      req.files[0]
+    );
+    userDetails.img = imageName.data.id;
   }
 
   const newUser = new user(userDetails);
@@ -95,10 +99,15 @@ exports.updateUser = (req, res) => {
 
 //Middleware in userModel.js handles deletion of ref targetProfiles with mongoose 'pre' hook.
 exports.deleteUser = async (req, res) => {
+  const foundUser = await user.findOne({ _id: req.params.userId });
+
   await user.deleteOne({ _id: req.params.userId }, (err) => {
     if (err) {
       res.send(err);
     } else {
+      if (foundUser.img) {
+        googleDriveService.deleteFile(foundUser.img);
+      }
       res.json({
         message: "user deleted!",
         _id: req.params.userId,

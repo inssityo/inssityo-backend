@@ -94,11 +94,11 @@ exports.getAccessToken = (oAuth2Client, callback) => {
   });
 };
 
-exports.createFolder = async (name) => {
+exports.createFolder = async (name, ParentFolder) => {
   var fileMetadata = {
     name: name,
     mimeType: "application/vnd.google-apps.folder",
-    parents: ["11YHNVJmAv7FRX2huo_9Q5JJy8u3BHJDM"],
+    parents: [ParentFolder],
   };
   const drive = google.drive({ version: "v3" });
   try {
@@ -162,30 +162,6 @@ exports.listFiles = () => {
     }
   );
 };
-
-/** 
-exports.getFileUrl = (fileId) => {
-  return new Promise((resolve, reject) => {
-    console.log("GETFILEURL", fileId);
-    const drive = google.drive({ version: "v3" });
-    drive.files.get(
-      { fileId: fileId, alt: "media", supportsAllDrives: true },
-      { responseType: "stream" },
-      (err, { data }) => {
-        if (err) {
-          return reject("REJECT", err);
-        }
-        let buf = [];
-        data.on("data", (e) => buf.push(e));
-        data.on("end", () => {
-          const buffer = Buffer.concat(buf);
-          resolve(buffer);
-        });
-      }
-    );
-  });
-};
-*/
 
 //Get webContentLink for Img src use.
 exports.getFileContentLink = (fileId) => {

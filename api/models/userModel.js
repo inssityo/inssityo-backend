@@ -14,8 +14,7 @@ const userSchema = new mongoose.Schema({
   surname: { type: String },
   movingDate: { type: Date },
   //Profile picture
-  // eslint-disable-next-line no-undef
-  img: { data: Buffer, type: String },
+  img: { type: String },
   //Older is bigger
   ageGroup: { type: Number, min: 1, max: 8 },
   //1-male, 2-female, 3-other.
