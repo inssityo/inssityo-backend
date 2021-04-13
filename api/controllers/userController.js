@@ -19,6 +19,8 @@ exports.getUser = (req, res) => {
   user
     .findById(req.params.userId)
     .populate("targetProfile")
+    .populate("petTypes")
+    .populate("hobbies")
     .exec(function (err, user) {
       if (user) {
         res.json(user);
