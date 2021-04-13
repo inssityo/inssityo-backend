@@ -43,8 +43,8 @@ const userSchema = new mongoose.Schema({
   sociality: { type: Number, min: 1, max: 7 },
   pets: { type: Boolean },
   //show only if Pets = true, https://stackoverflow.com/a/49940245{}
-  petTypes: petTypesSchema,
-  hobbies: hobbiesSchema,
+  petTypes: [petTypesSchema],
+  hobbies: [hobbiesSchema],
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
   //The dream room mate for this user. Will be compared against other users"
   targetProfile: {
