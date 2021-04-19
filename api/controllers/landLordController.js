@@ -45,6 +45,7 @@ exports.createLandLord = async (req, res) => {
 exports.getLandlordById = (req, res) => {
   landLord
     .findById(req.params.landLordId)
+    //Populate child apartments
     .populate("apartments")
     .exec(function (err, landlord) {
       if (landlord) {
@@ -59,9 +60,6 @@ exports.getLandlordById = (req, res) => {
 //Updates landlord with given request params with specified request body data.
 exports.updateLandLord = (req, res) => {
   let landlordToUpdate = req.body;
-  if (landlordToUpdate.img) {
-    landlordToUpdate.img = new Buffer.from(landlordToUpdate.img, "base64");
-  }
   landlordToUpdate.lastActive = new Date();
   landLord.findByIdAndUpdate(
     { _id: req.params.landLordId },

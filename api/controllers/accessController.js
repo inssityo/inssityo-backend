@@ -48,7 +48,7 @@ exports.login = async (req, res) => {
       if (landlordLoginOk) {
         //Update lastActive dates for landlord and owned apartments
         helper.UpdateAptDates(foundLandlord._id);
-
+        //Sign tokens with local secret
         const accessToken = jwt.sign(
           { username: foundLandlord.email },
           process.env.TOKEN_SECRET,
@@ -73,6 +73,7 @@ exports.login = async (req, res) => {
   }
 };
 
+//Removes functional refresh token on logout
 exports.logout = (req, res) => {
   const token = req.body.refreshToken;
   refreshTokens = refreshTokens.filter((t) => t !== token);
@@ -80,6 +81,7 @@ exports.logout = (req, res) => {
   res.json({ message: "Logged out!" });
 };
 
+//Renews access token when called with viable refreshtoken in body
 exports.refreshSession = (req, res) => {
   const token = req.body.refreshToken;
   if (!token) {
