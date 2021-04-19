@@ -80,14 +80,10 @@ exports.createUser = async (req, res) => {
   });
 };
 
-//Tämä vaatii, että pyynnön bodyssä lähetetään user-olio.
+//Updates existing user. TODO Need to work with google images here.
 exports.updateUser = (req, res) => {
   let userToUpdate = req.body;
   userToUpdate.lastActive = new Date();
-  if (userToUpdate.img) {
-    // eslint-disable-next-line no-undef
-    userToUpdate.img = new Buffer.from(req.body.img, "base64");
-  }
   user.findByIdAndUpdate(
     { _id: req.params.userId },
     userToUpdate,

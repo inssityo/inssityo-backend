@@ -3,6 +3,7 @@ const { google } = require("googleapis");
 const readable = require("stream").Readable;
 const { file } = require("googleapis/build/src/apis/file");
 
+//Convert buffer to readable stream for Drive upload.
 function bufferToStream(buffer) {
   var stream = new readable();
   stream.push(buffer);
@@ -11,6 +12,7 @@ function bufferToStream(buffer) {
   return stream;
 }
 
+//Initialize OAuth verification. Need to run this on server startup.
 exports.initializeGoogleAuth = () => {
   const oAuth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_DRIVE_CLIENT_ID,
@@ -24,7 +26,7 @@ exports.initializeGoogleAuth = () => {
   });
 
   console.log(url);
-
+  //Console input
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -94,6 +96,12 @@ exports.getAccessToken = (oAuth2Client, callback) => {
   });
 };
 
+/**
+ *
+ * @param {String} name Foldername
+ * @param {String} ParentFolder Parent folder ID.
+ * @returns
+ */
 exports.createFolder = async (name, ParentFolder) => {
   var fileMetadata = {
     name: name,
@@ -112,6 +120,13 @@ exports.createFolder = async (name, ParentFolder) => {
   }
 };
 
+/**
+ *
+ * @param {String} folderId Photo folder id.
+ * @param {String} photoName Name for saved photo.
+ * @param {File} photo Picture to be saved
+ * @returns
+ */
 exports.uploadToFolder = async (folderId, photoName, photo) => {
   console.log(photo);
   try {
@@ -168,7 +183,6 @@ exports.getFileContentLink = (fileId) => {
   const drive = google.drive({ version: "v3" });
   drive.files.get({ fileId: fileId, fields: "*" }, (err, res) => {
     if (err) return "GET IMAGE ERR ", err;
-    console.log(res.data.webContentLink);
     return res.data.webContentLink;
   });
 };
